@@ -24,26 +24,20 @@ body.games-body {
 /* === FULL-SCREEN BACKGROUND BETA FIELD === */
 
 .beta-field-section {
-  position: fixed;        /* behind everything */
-  inset: 0;               /* top:0; right:0; bottom:0; left:0 */
-  width: 100%;
-  height: 100vh;
-  z-index: 0;             /* background layer */
-  pointer-events: none;
-  overflow: hidden;
+  position: background;        /* behind everything */
 }
 
 .beta-field-canvas {
-  width: 100%;
-  height: 100%;
+  width: 0%;
+  height: 0%;
   display: block;
 }
 
 /* === MAIN WRAPPER (FLOATING ABOVE BETA SEA) === */
 
 .games-wrapper {
-  position: absolute;
-  top: 0;
+  position: absolute;         /* above beta field */
+  inset: 2px;
   z-index: 2;             /* above background */
   max-width: 100%;
   margin: 0 auto;
