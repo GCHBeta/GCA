@@ -8,7 +8,7 @@ Nothing on this website, social media, or associated content should be interpret
 • statements of expectation or responsibility
 
 The Vault of β is a community treasury used for memes, raids, experiments, chaos operations,
-liquidity reinforcement, or whatever the Cult of Chad finds entertaining. No roadmap or legal
+liquidity reinforcement, or whatever the Cummunity of Chad finds entertaining. No roadmap or legal
 obligation is attached to it.
 
 By interacting with GCAβ, you acknowledge:
