@@ -77,6 +77,18 @@ const BACKEND = {
   let siweDone = false;
   let isBusy = false;
 
+  // Lore Helper
+  function setModeUI() {
+  const modeTextEl = document.getElementById("modeText");
+  const isLive = typeof API_BASE === "string" && API_BASE.startsWith("http");
+
+  document.body.classList.toggle("mode-live", isLive);
+  document.body.classList.toggle("mode-lore", !isLive);
+
+  if (modeTextEl) modeTextEl.textContent = isLive ? "LIVE" : "LORE";
+}
+
+
   // ========= UI HELPERS =========
   function setStatus(msg) {
     if (statusText) statusText.textContent = msg;
@@ -649,6 +661,8 @@ ethereum.on("accountsChanged", async (accounts) => {
   }
 
   // Boot
+  setModeUI();
+
   bindWalletEvents();
   renderRooms("NPC");
   if (addTokenBtn) addTokenBtn.disabled = true;

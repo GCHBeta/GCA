@@ -249,6 +249,10 @@ body{
   justify-content:space-between;
   gap:10px;
 }
+/* Click press feedback (global, subtle) */
+.room:active {
+  transform: translateY(0) scale(0.995);
+}
 .badge{
   font-size:12px;
   padding:6px 10px;
@@ -295,3 +299,167 @@ body{
   .grid{grid-template-columns:1fr}
   .top-actions{flex-wrap:wrap; justify-content:flex-end}
 }
+
+/* =========================================================
+   GCAb Micro-Polish Pack (rooms hover, locked pulse, ENTER glow)
+   Paste at END of style.css
+========================================================= */
+
+/* Make <a class="room"> behave like a card link cleanly */
+/* =========================================================
+   GCAb Micro-Polish Pack (SCOPED to .rooms-nav)
+========================================================= */
+
+.rooms-nav a.room {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+}
+
+/* Card hover feel (ONLY nav rooms) */
+.rooms-nav .room {
+  transform: translateZ(0);
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease,
+    filter 140ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* soft shine sweep on hover (ONLY nav rooms) */
+.rooms-nav .room::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -60%;
+  width: 80%;
+  height: 180%;
+  transform: rotate(12deg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.06) 45%,
+    rgba(255,255,255,0.12) 55%,
+    rgba(255,255,255,0) 100%
+  );
+}
+
+.rooms-nav .room:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+  border-color: rgba(255,255,255,0.14);
+}
+
+.rooms-nav .room:hover::after {
+  opacity: 1;
+  animation: gcab-shine 900ms ease forwards;
+}
+
+@keyframes gcab-shine {
+  0% { left: -70%; }
+  100% { left: 140%; }
+}
+
+/* Locked rooms: dim + slow pulse (ONLY nav rooms) */
+.rooms-nav .room.locked,
+.rooms-nav a.room.locked {
+  filter: saturate(0.85) brightness(0.86);
+  opacity: 0.78;
+  cursor: not-allowed;
+}
+
+.rooms-nav .room.locked::after,
+.rooms-nav a.room.locked::after {
+  display: none;
+}
+
+.rooms-nav .room.locked:hover,
+.rooms-nav a.room.locked:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: rgba(255,255,255,0.08);
+}
+
+/* Pulse LOCKED badge (nav rooms + general locked badges still ok) */
+.rooms-nav .room.locked .badge,
+.badge.locked {
+  position: relative;
+  animation: gcab-locked-pulse 1.9s ease-in-out infinite;
+}
+
+@keyframes gcab-locked-pulse {
+  0%, 100% { opacity: 0.72; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-1px); }
+}
+
+/* ENTER badge float (ONLY nav rooms) */
+.rooms-nav .badge.open {
+  animation: gcab-enter-float 1.6s ease-in-out infinite;
+}
+
+@keyframes gcab-enter-float {
+  0%, 100% { transform: translateY(0); filter: brightness(1); }
+  50% { transform: translateY(-1px); filter: brightness(1.15); }
+}
+
+/* ENTER hype on hover (ONLY nav rooms) */
+.rooms-nav a.room:hover .badge.open {
+  animation: gcab-enter-hype 520ms ease-in-out infinite alternate;
+}
+
+@keyframes gcab-enter-hype {
+  from { transform: translateY(-1px) scale(1.00); filter: brightness(1.1); }
+  to   { transform: translateY(-1px) scale(1.03); filter: brightness(1.25); }
+}
+
+/* Disable clicks on locked nav links */
+.rooms-nav a.room.locked { pointer-events: none; }
+
+/* Mode pill: tiny signal dot */
+#modePill #modeText {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#modePill #modeText::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+  background: rgba(255,255,255,0.35);
+  box-shadow: 0 0 0 rgba(255,255,255,0);
+  transition: background 140ms ease, box-shadow 140ms ease;
+}
+
+/* Lore mode (no backend) */
+.mode-lore #modePill #modeText::before {
+  background: rgba(255,255,255,0.28);
+  box-shadow: 0 0 10px rgba(255,255,255,0.10);
+}
+
+/* Live mode (backend enabled) */
+.mode-live #modePill #modeText::before {
+  background: rgba(0,255,255,0.60);
+  box-shadow: 0 0 16px rgba(0,255,255,0.20);
+}
+
+/* Later: heartbeat (when backend /health exists) */
+.mode-live.heartbeat #modePill #modeText::before {
+  animation: gcab-heartbeat 1.2s ease-in-out infinite;
+}
+
+@keyframes gcab-heartbeat {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 16px rgba(0,255,255,0.18); }
+  50% { transform: scale(1.25); box-shadow: 0 0 22px rgba(0,255,255,0.28); }
+}
+
+/* Disable pointer events on locked rooms to prevent clicks */
+a.room.locked { pointer-events: none; }

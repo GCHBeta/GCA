@@ -26,6 +26,9 @@
 
     <div class="top-actions">
       <div class="pill" id="netPill">Network: <span id="netName">—</span></div>
+      <div class="pill" id="modePill">
+Mode: <span id="modeText">—</span>
+</div>
       <div class="pill" id="addrPill">Wallet: <span id="addrShort">—</span></div>
       <button class="btn primary" id="connectBtn">Connect MetaMask</button>
     </div>
@@ -137,9 +140,9 @@
           <div class="card-title">Rooms</div>
           <p class="muted">Enter a room to play. Locked rooms tease future patches.</p>
 
-          <div class="rooms">
+          <div class="rooms rooms-nav">
 
-            <a class="room" href="./rooms/basement.html" style="text-decoration:none; color:inherit">
+            <a class="room" href="./rooms/basement.html">
               <div>
                 <div style="font-weight:800">Basement</div>
                 <div class="small muted">Sidekicks · scan, claim, bind the weak</div>
@@ -147,7 +150,7 @@
               <div class="badge open">ENTER</div>
             </a>
 
-            <a class="room" href="./rooms/signal.html" style="text-decoration:none; color:inherit">
+            <a class="room" href="./rooms/signal.html">
               <div>
                 <div style="font-weight:800">Signal Room</div>
                 <div class="small muted">Energy · daily UTC claim + streak logic</div>
@@ -155,21 +158,23 @@
               <div class="badge open">ENTER</div>
             </a>
 
-            <a class="room" href="./rooms/myth.html" style="text-decoration:none; color:inherit">
-              <div>
-                <div style="font-weight:800">Myth Hall</div>
-                <div class="small muted">Upkeep · boosts · titles · sinks</div>
-              </div>
-              <div class="badge open">SOON</div>
-            </a>
+<a class="room locked" href="./rooms/myth.html">
+  <div>
+    <div style="font-weight:800">Myth Hall</div>
+    <div class="small muted">Upkeep · boosts · titles · sinks</div>
+  </div>
+  <div class="badge locked">SOON</div>
+</a>
 
-            <a class="room" href="./rooms/alpha.html" style="text-decoration:none; color:inherit">
-              <div>
-                <div style="font-weight:800">Alpha Council</div>
-                <div class="small muted">Influence · votes · bounties · politics</div>
-              </div>
-              <div class="badge locked">SOON</div>
-            </a>
+
+<a class="room locked" href="./rooms/alpha.html">
+  <div>
+    <div style="font-weight:800">Alpha Council</div>
+    <div class="small muted">Influence · votes · bounties · politics</div>
+  </div>
+  <div class="badge locked">SOON</div>
+</a>
+
 
           </div>
         </div>
