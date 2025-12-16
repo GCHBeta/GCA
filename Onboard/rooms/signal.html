@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signal Room — GCAb</title>
+  <link rel="icon" type="image/png" href="../favicon.png" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+
+<body>
+  <!-- Ambient layers -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-noise"></div>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <a class="brand" href="../index.html" style="text-decoration:none; color:inherit">
+      <div class="sigil">β</div>
+      <div class="brand-text">
+        <div class="name">Signal Room</div>
+        <div class="tag">ENERGY <span class="muted">· daily UTC ritual</span></div>
+      </div>
+    </a>
+
+    <div class="top-actions">
+      <div class="pill" id="netPill">Network: <span id="netName">—</span></div>
+      <div class="pill" id="addrPill">Wallet: <span id="addrShort">—</span></div>
+      <button class="btn primary" id="connectBtn">Connect MetaMask</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ROOM HERO -->
+    <section class="hero" style="padding-top:18px">
+      <div class="hero-left">
+        <h1>
+          Daily Energy.
+          <span class="accent">The Forge Breathes.</span>
+        </h1>
+
+        <p class="lead">
+          Claim once per UTC day. Unclaimed Energy stores up to 3 days.
+          Streaks boost mint (prototype today — real soon).
+        </p>
+
+        <div class="status" id="statusLine">
+          Status: <span id="statusText">Not connected.</span>
+        </div>
+
+        <div class="rooms" style="margin-top:14px">
+          <div class="room">
+            <div>
+              <div style="font-weight:800">Rule: No negative energy.</div>
+              <div class="small muted">The ledger is strict. No debt. No loopholes.</div>
+            </div>
+            <div class="badge open">LIVE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MINI AURA HUD -->
+      <div class="hero-right">
+        <div class="card big">
+          <div class="card-title">Aura HUD</div>
+
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="label">GCAb Balance</div>
+              <div class="value" id="balText">—</div>
+              <div class="hint" id="balHint">Connect to sync your aura.</div>
+            </div>
+
+            <div class="stat">
+              <div class="label">Rank</div>
+              <div class="value glow" id="rankText">—</div>
+              <div class="hint" id="rankHint">Rank decides your doors.</div>
+            </div>
+
+            <div class="stat">
+              <div class="label">Power</div>
+              <div class="value" id="powerText">—</div>
+              <div class="hint">Non-spendable. Derived from holdings.</div>
+            </div>
+
+            <div class="stat">
+              <div class="label">Title</div>
+              <div class="value" id="titleText">—</div>
+              <div class="hint">Lore badge.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <div class="small muted">Chain</div>
+            <div class="small" id="chainText">—</div>
+          </div>
+          <div class="row">
+            <div class="small muted">Address</div>
+            <div class="small mono" id="addrFull">—</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button class="btn ghost" id="addTokenBtn" disabled style="flex:1">
+              Add GCAb to MetaMask
+            </button>
+            <a class="btn secondary" href="https://app.uniswap.org/#/swap" target="_blank" rel="noreferrer" style="flex:1; text-align:center">
+              Buy on Uniswap
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CORE -->
+    <section class="section">
+      <div class="section-head">
+        <h2>Energy Console</h2>
+        <p class="muted">
+          This room is one job: claim + understand your Energy.
+          Backend drives real numbers; prototype streak exists locally.
+        </p>
+      </div>
+
+      <div class="grid">
+
+        <!-- ENERGY CARD (IDs match your original HTML) -->
+        <div class="card">
+          <div class="card-title">Energy (Daily UTC)</div>
+          <p class="muted">
+            Claim once per day. Unclaimed energy stores up to 3 days (warehouse).
+            Streak boosts your mint.
+          </p>
+
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="label">Energy Balance</div>
+              <div class="value" id="energyBalanceText">—</div>
+              <div class="hint" id="energyHint">Connect wallet to sync.</div>
+            </div>
+
+            <div class="stat">
+              <div class="label">Daily Mint</div>
+              <div class="value" id="energyDailyText">—</div>
+              <div class="hint">Includes streak bonus.</div>
+            </div>
+
+            <div class="stat">
+              <div class="label">Unclaimed</div>
+              <div class="value glow" id="energyUnclaimedText">—</div>
+              <div class="hint">Cap: 3 days stored.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <button class="btn primary full" id="claimEnergyBtn" disabled>Claim Energy</button>
+
+          <div class="divider"></div>
+
+          <!-- SANDBOX CHECK-IN (IDs kept) -->
+          <div class="room">
+            <div>
+              <div style="font-weight:800">Daily Check-In (Prototype)</div>
+              <div class="small muted">Local streak only. Backend version arrives soon.</div>
+            </div>
+            <div class="pill">Streak: <span id="streakText">0</span></div>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <button class="btn secondary" id="checkinBtn" disabled>Check In</button>
+            <div class="small muted" id="checkinHint">Connect wallet to start.</div>
+          </div>
+        </div>
+
+        <!-- ACCESS PREVIEW -->
+        <div class="card">
+          <div class="card-title">Access Preview</div>
+          <p class="muted">Auto-rendered by your rank logic.</p>
+          <div class="rooms" id="rooms"></div>
+        </div>
+
+        <!-- WHAT'S NEXT -->
+        <div class="card">
+          <div class="card-title">What Happens Next</div>
+          <p class="muted">
+            This is where Energy becomes gameplay. Spend sinks make the system feel alive.
+          </p>
+
+          <div class="rooms">
+            <div class="room">
+              <div>
+                <div style="font-weight:800">Energy Spend API</div>
+                <div class="small muted">Burn + ledger reasons + no negative energy</div>
+              </div>
+              <div class="badge open">NEXT</div>
+            </div>
+
+            <div class="room">
+              <div>
+                <div style="font-weight:800">Sidekick Upkeep</div>
+                <div class="small muted">Non-linear upkeep · anti-hoarding</div>
+              </div>
+              <div class="badge locked">SOON</div>
+            </div>
+
+            <div class="room">
+              <div>
+                <div style="font-weight:800">Boosts</div>
+                <div class="small muted">Temporary power spikes · cooldowns</div>
+              </div>
+              <div class="badge locked">SOON</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="fine">GCAb is a meme. Not financial advice. The game is for entertainment.</div>
+      <div class="fine muted">© 2025 GigaVerse Labs — still βeta.</div>
+    </footer>
+  </main>
+
+  <!-- Ethers v6 -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+  <script src="../app.js"></script>
+</body>
+</html>

@@ -39,6 +39,14 @@ CREATE TABLE IF NOT EXISTS sidekicks (
   updated_at INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS sidekicks (
+  owner TEXT PRIMARY KEY,
+  target TEXT NOT NULL UNIQUE,
+  updated_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_sidekicks_target ON sidekicks(target);
+
 -- Holders cache (EOA-only filtering via is_contract flag)
 CREATE TABLE IF NOT EXISTS holders_cache (
   address TEXT PRIMARY KEY,

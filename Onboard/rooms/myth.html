@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Myth Hall — GCAb</title>
+  <link rel="icon" type="image/png" href="../favicon.png" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-noise"></div>
+
+  <header class="topbar">
+    <a class="brand" href="../index.html" style="text-decoration:none; color:inherit">
+      <div class="sigil">β</div>
+      <div class="brand-text">
+        <div class="name">Myth Hall</div>
+        <div class="tag">UPKEEP <span class="muted">· boosts · sinks</span></div>
+      </div>
+    </a>
+
+    <div class="top-actions">
+      <div class="pill" id="netPill">Network: <span id="netName">—</span></div>
+      <div class="pill" id="addrPill">Wallet: <span id="addrShort">—</span></div>
+      <button class="btn primary" id="connectBtn">Connect MetaMask</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" style="padding-top:18px">
+      <div class="hero-left">
+        <h1>
+          Myth Hall.
+          <span class="accent">Where hoarding gets expensive.</span>
+        </h1>
+
+        <p class="lead">
+          This is the sink layer. Energy becomes real gameplay:
+          upkeep, boosts, titles, and anti-NPC mechanics.
+        </p>
+
+        <div class="status" id="statusLine">
+          Status: <span id="statusText">Not connected.</span>
+        </div>
+
+        <div class="rooms" style="margin-top:14px">
+          <div class="room">
+            <div>
+              <div style="font-weight:800">Core Rule: Non-linear upkeep.</div>
+              <div class="small muted">1 sidekick is cheap. 10 sidekicks is pain. Wallet-splitting loses.</div>
+            </div>
+            <div class="badge locked">SOON</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="card big">
+          <div class="card-title">Aura HUD</div>
+
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="label">GCAb Balance</div>
+              <div class="value" id="balText">—</div>
+              <div class="hint" id="balHint">Connect to sync your aura.</div>
+            </div>
+
+            <div class="stat">
+              <div class="label">Rank</div>
+              <div class="value glow" id="rankText">—</div>
+              <div class="hint" id="rankHint">Rank decides your doors.</div>
+            </div>
+
+            <div class="stat">
+              <div class="label">Power</div>
+              <div class="value" id="powerText">—</div>
+              <div class="hint">You radiate it. Not spendable.</div>
+            </div>
+
+            <div class="stat">
+              <div class="label">Title</div>
+              <div class="value" id="titleText">—</div>
+              <div class="hint">Myth upgrades live here.</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <div class="small muted">Chain</div>
+            <div class="small" id="chainText">—</div>
+          </div>
+          <div class="row">
+            <div class="small muted">Address</div>
+            <div class="small mono" id="addrFull">—</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button class="btn ghost" id="addTokenBtn" disabled style="flex:1">Add GCAb</button>
+            <a class="btn secondary" href="https://app.uniswap.org/#/swap" target="_blank" rel="noreferrer"
+               style="flex:1; text-align:center">Buy</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Systems (Preview)</h2>
+        <p class="muted">Locked, but the design is real. The Forge does not lie.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-title">Upkeep Engine</div>
+          <div class="rooms">
+            <div class="room">
+              <div>
+                <div style="font-weight:800">Daily Sidekick Upkeep</div>
+                <div class="small muted">Non-linear energy cost · auto-release on failure</div>
+              </div>
+              <div class="badge locked">PATCH</div>
+            </div>
+            <div class="room">
+              <div>
+                <div style="font-weight:800">Anti Wallet-Split</div>
+                <div class="small muted">Splitting increases total upkeep across identities</div>
+              </div>
+              <div class="badge locked">PATCH</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Boosts</div>
+          <div class="rooms">
+            <div class="room">
+              <div>
+                <div style="font-weight:800">Signal Surge</div>
+                <div class="small muted">Temporary power spike · cooldown · costs energy</div>
+              </div>
+              <div class="badge locked">PATCH</div>
+            </div>
+            <div class="room">
+              <div>
+                <div style="font-weight:800">Myth Shield</div>
+                <div class="small muted">Protects from binds for X hours</div>
+              </div>
+              <div class="badge locked">PATCH</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Titles</div>
+          <div class="rooms">
+            <div class="room">
+              <div>
+                <div style="font-weight:800">Cosmetic Titles</div>
+                <div class="small muted">Earned via streak + sinks + actions</div>
+              </div>
+              <div class="badge locked">PATCH</div>
+            </div>
+            <div class="room">
+              <div>
+                <div style="font-weight:800">Hall of Names</div>
+                <div class="small muted">Leaderboard, but mythic. No cringe.</div>
+              </div>
+              <div class="badge locked">PATCH</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Your Access (Auto)</div>
+          <p class="muted">Rendered from your rank tiers.</p>
+          <div class="rooms" id="rooms"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="fine">GCAb is a meme. Not financial advice. The game is for entertainment.</div>
+      <div class="fine muted">© 2025 GigaVerse Labs — still βeta.</div>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+  <script src="../app.js"></script>
+</body>
+</html>
