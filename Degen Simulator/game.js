@@ -5,34 +5,64 @@ class DegenGame {
         this.currentScenario = null;
         this.isProcessingChoice = false;
         
+        // Bind methods to preserve 'this' context
+        this.generateNextScenario = this.generateNextScenario.bind(this);
+        this.panicSell = this.panicSell.bind(this);
+        this.apeIn = this.apeIn.bind(this);
+        this.clearLog = this.clearLog.bind(this);
+        
         this.init();
     }
     
     async init() {
+        console.log('🎮 DegenGame initializing...');
+        
         // Wait for engine to initialize
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Make sure engine is ready
+        if (!this.engine || !this.engine.generateNextScenario) {
+            console.error('❌ Engine not loaded!');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            this.engine = window.degenEngine;
+        }
         
         // Generate first scenario
         this.generateNextScenario();
         
-        // Enable quick actions after first scenario
-        setTimeout(() => {
-            document.getElementById('panicSellBtn').disabled = false;
-            document.getElementById('apeInBtn').disabled = false;
-        }, 2000);
-        document.getElementById('nextScenarioBtn').addEventListener('click', () => {
-    this.generateNextScenario();
-});
-        // Set up quick action handlers
-        this.setupQuickActions();
+        // Set up ALL event listeners
+        this.setupEventListeners();
+        
+        console.log('✅ DegenGame ready!');
     }
     
     generateNextScenario() {
-        this.currentScenario = this.engine.generateNextScenario();
-        this.renderScenario();
+        console.log('🔄 Generating next scenario...');
+        
+        if (!this.engine) {
+            console.error('No engine found!');
+            this.engine = window.degenEngine;
+            if (!this.engine) {
+                document.getElementById('scenarioTitle').textContent = 'ERROR: Engine not loaded!';
+                return;
+            }
+        }
+        
+        try {
+            this.currentScenario = this.engine.generateNextScenario();
+            this.renderScenario();
+        } catch (error) {
+            console.error('Error generating scenario:', error);
+            document.getElementById('scenarioTitle').textContent = 'ERROR: ' + error.message;
+        }
     }
     
     renderScenario() {
+        if (!this.currentScenario) {
+            console.error('No scenario to render!');
+            return;
+        }
+        
         const scenario = this.currentScenario;
         
         // Update scenario info
@@ -44,15 +74,22 @@ class DegenGame {
         
         // Update scenario image
         const scenarioImage = document.getElementById('scenarioImage');
-        scenarioImage.src = scenario.memeUrl;
+        if (scenario.memeUrl) {
+            scenarioImage.src = scenario.memeUrl;
+        } else {
+            // Fallback meme
+            scenarioImage.src = 'https://api.memegen.link/images/ds/No_Meme/No_Problem.png';
+        }
         scenarioImage.alt = scenario.title;
         
         // Update overlay with live data
-        document.getElementById('imageOverlay').innerHTML = `
-            Gas: ${this.engine.state.liveData.gasPrice.toFixed(0)} gwei
-            | ETH: $${this.engine.state.liveData.ethPrice.toFixed(0)}
-            | ${this.engine.state.liveData.marketSentiment.toUpperCase()}
-        `;
+        if (this.engine.state.liveData) {
+            document.getElementById('imageOverlay').innerHTML = `
+                Gas: ${this.engine.state.liveData.gasPrice?.toFixed(0) || '??'} gwei
+                | ETH: $${this.engine.state.liveData.ethPrice?.toFixed(0) || '???'}
+                | ${(this.engine.state.liveData.marketSentiment || 'neutral').toUpperCase()}
+            `;
+        }
         
         // Render options
         this.renderOptions(scenario.options);
@@ -66,6 +103,11 @@ class DegenGame {
     
     renderOptions(options) {
         const container = document.getElementById('optionsContainer');
+        if (!container) {
+            console.error('Options container not found!');
+            return;
+        }
+        
         container.innerHTML = '';
         
         options.forEach((option, index) => {
@@ -90,6 +132,12 @@ class DegenGame {
     async processChoice(choiceIndex) {
         if (this.isProcessingChoice) return;
         this.isProcessingChoice = true;
+        
+        if (!this.currentScenario) {
+            console.error('No current scenario!');
+            this.isProcessingChoice = false;
+            return;
+        }
         
         const scenario = this.currentScenario;
         const choice = scenario.options[choiceIndex];
@@ -119,6 +167,11 @@ class DegenGame {
         const portfolioChangeElement = document.getElementById('portfolioChange');
         const riskLevelElement = document.getElementById('riskLevel');
         
+        if (!outcomeContainer || !portfolioChangeElement || !riskLevelElement) {
+            console.error('Outcome elements not found!');
+            return;
+        }
+        
         // Update outcome display
         document.getElementById('outcomeIcon').textContent = outcome.icon;
         document.getElementById('outcomeTitle').textContent = outcome.title;
@@ -141,6 +194,8 @@ class DegenGame {
     
     resetOutcomeDisplay() {
         const outcomeContainer = document.getElementById('outcomeContainer');
+        if (!outcomeContainer) return;
+        
         outcomeContainer.style.display = 'block';
         
         document.getElementById('outcomeIcon').textContent = '⚡';
@@ -163,6 +218,8 @@ class DegenGame {
     
     animatePortfolioChange(change) {
         const portfolioElement = document.getElementById('portfolioValue');
+        if (!portfolioElement) return;
+        
         const originalColor = portfolioElement.style.color;
         
         // Flash color based on change
@@ -175,18 +232,38 @@ class DegenGame {
         }, 1000);
     }
     
-    setupQuickActions() {
-        document.getElementById('panicSellBtn').addEventListener('click', () => {
-            this.panicSell();
-        });
+    setupEventListeners() {
+        console.log('🔧 Setting up event listeners...');
         
-        document.getElementById('apeInBtn').addEventListener('click', () => {
-            this.apeIn();
-        });
+        // Remove any existing inline onclick handlers
+        const nextBtn = document.getElementById('nextScenarioBtn');
+        if (nextBtn) {
+            nextBtn.removeAttribute('onclick');
+            nextBtn.addEventListener('click', this.generateNextScenario);
+        }
         
-        document.getElementById('nextScenarioBtn').addEventListener('click', () => {
-            this.generateNextScenario();
-        });
+        const panicBtn = document.getElementById('panicSellBtn');
+        if (panicBtn) {
+            panicBtn.removeAttribute('onclick');
+            panicBtn.addEventListener('click', this.panicSell);
+            panicBtn.disabled = false;
+        }
+        
+        const apeBtn = document.getElementById('apeInBtn');
+        if (apeBtn) {
+            apeBtn.removeAttribute('onclick');
+            apeBtn.addEventListener('click', this.apeIn);
+            apeBtn.disabled = false;
+        }
+        
+        const clearBtn = document.querySelector('.clear-log');
+        if (clearBtn) {
+            clearBtn.removeAttribute('onclick');
+            clearBtn.addEventListener('click', this.clearLog);
+        }
+        
+        // Expose to window for debugging
+        window.debugGenerateNext = this.generateNextScenario;
     }
     
     panicSell() {
@@ -238,32 +315,67 @@ class DegenGame {
 
 // ===== INITIALIZE GAME =====
 document.addEventListener('DOMContentLoaded', () => {
-    window.degenGame = new DegenGame();
+    console.log('📄 DOM loaded, initializing game...');
+    
+    // Wait a moment for engine to load
+    setTimeout(() => {
+        if (!window.degenEngine) {
+            console.warn('⚠️ Engine not yet loaded, retrying...');
+            // Try to create engine if it doesn't exist
+            if (typeof DegenStoryEngine !== 'undefined') {
+                window.degenEngine = new DegenStoryEngine();
+            }
+        }
+        
+        window.degenGame = new DegenGame();
+        
+        // Global helper for console debugging
+        window.generateNextScenario = function() {
+            if (window.degenGame && window.degenGame.generateNextScenario) {
+                window.degenGame.generateNextScenario();
+            } else {
+                console.error('Game not ready!');
+            }
+        };
+        
+        console.log('🎲 Game instance created!');
+    }, 100);
 });
 
 // ===== EXPORT FOR CONSOLE DEBUGGING =====
-window.DegenSimulator = {
-    engine: window.degenEngine,
-    game: window.degenGame,
-    cheat: {
-        addMoney: (amount) => {
-            window.degenEngine.state.portfolio += amount;
-            window.degenEngine.updateStateUI();
-            console.log(`💰 Added $${amount}. New portfolio: $${window.degenEngine.state.portfolio}`);
-        },
-        reset: () => {
-            window.degenEngine = new DegenStoryEngine();
-            window.degenGame = new DegenGame();
-            console.log('🔄 Simulation reset!');
-        },
-        stats: () => {
-            console.table(window.degenEngine.state);
+setTimeout(() => {
+    window.DegenSimulator = {
+        engine: window.degenEngine,
+        game: window.degenGame,
+        cheat: {
+            addMoney: (amount) => {
+                if (window.degenEngine) {
+                    window.degenEngine.state.portfolio += amount;
+                    window.degenEngine.updateStateUI();
+                    console.log(`💰 Added $${amount}. New portfolio: $${window.degenEngine.state.portfolio}`);
+                }
+            },
+            reset: () => {
+                if (typeof DegenStoryEngine !== 'undefined') {
+                    window.degenEngine = new DegenStoryEngine();
+                    window.degenGame = new DegenGame();
+                    console.log('🔄 Simulation reset!');
+                }
+            },
+            stats: () => {
+                if (window.degenEngine) {
+                    console.table(window.degenEngine.state);
+                }
+            },
+            next: () => {
+                if (window.degenGame && window.degenGame.generateNextScenario) {
+                    window.degenGame.generateNextScenario();
+                }
+            }
         }
-    }
-};
-window.generateNextScenario = () => window.degenGame.generateNextScenario();
-
-console.log(`
+    };
+    
+    console.log(`
 ╔══════════════════════════════════════════════╗
 ║   INFINITE DEGEN SIMULATOR v2.1 - LOADED    ║
 ║                                              ║
@@ -271,7 +383,9 @@ console.log(`
 ║   • DegenSimulator.cheat.addMoney(10000)     ║
 ║   • DegenSimulator.cheat.reset()             ║
 ║   • DegenSimulator.cheat.stats()             ║
+║   • DegenSimulator.cheat.next()              ║
 ║                                              ║
 ║   Good luck, degen. You'll need it. 🚀       ║
 ╚══════════════════════════════════════════════╝
-`);
+    `);
+}, 1000);

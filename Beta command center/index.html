@@ -3,719 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GCAB Beta Control Panel 🎮</title>
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="js/data.js"></script>
-    <style>
-        /* ADDITIONAL STYLES FOR CONTROL PANEL */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .dashboard-widget {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--based-purple);
-            border-radius: 15px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
-        
-        .dashboard-widget:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(157, 0, 255, 0.2);
-        }
-        
-        .widget-title {
-            color: var(--alpha-blue);
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .holdings-display {
-            text-align: center;
-            padding: 1rem;
-        }
-        
-        .gcab-amount {
-            font-size: 2.8rem;
-            font-weight: bold;
-            color: var(--alpha-blue);
-            text-shadow: var(--text-glow);
-            margin: 1rem 0;
-        }
-        
-        .gcab-value {
-            font-size: 1.5rem;
-            color: var(--delusion-green);
-            margin-bottom: 1.5rem;
-        }
-        
-        .primary-btn {
-            background: linear-gradient(45deg, var(--alpha-blue), var(--based-purple));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: block;
-            width: 100%;
-            margin-top: 1rem;
-        }
-        
-        .primary-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 238, 255, 0.3);
-        }
-        
-        .game-feed {
-            max-height: 300px;
-            overflow-y: auto;
-            margin: 1rem 0;
-        }
-        
-        .feed-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-left: 3px solid var(--delusion-green);
-            padding: 0.8rem;
-            margin-bottom: 0.5rem;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .quick-link {
-            background: rgba(255, 170, 0, 0.1);
-            border: 2px solid var(--beta-orange);
-            border-radius: 10px;
-            padding: 1.2rem;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s;
-        }
-        
-        .quick-link:hover {
-            background: rgba(255, 170, 0, 0.2);
-            transform: translateY(-3px);
-        }
-        
-        .quick-link-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .quick-link-title {
-            color: var(--beta-orange);
-            font-weight: bold;
-        }
-        
-        /* Contract display */
-        .contract-display {
-            background: rgba(255, 0, 85, 0.1);
-            border: 2px solid var(--liquidity-red);
-            border-radius: 10px;
-            padding: 1.2rem;
-            margin: 1.5rem 0;
-            font-family: monospace;
-            word-break: break-all;
-            text-align: center;
-        }
-        
-        .copy-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 1rem;
-        }
-        
-        .secondary-btn {
-            background: var(--liquidity-red);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.8rem 1.5rem;
-            font-family: inherit;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .secondary-btn:hover {
-            background: #ff3366;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .quick-links {
-                grid-template-columns: 1fr;
-            }
-            
-            .copy-buttons {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <title>Infinite Degen Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Glitch Background -->
-    <div class="glitch-bg"></div>
-    
-    
-    <!-- Header -->
-    <header class="beta-header">
-        <div class="logo-container">
-            <h1 class="glitch-text" data-text="GCAB BETA CONTROL">GCAB BETA CONTROL</h1>
-            <div class="beta-badge">PANEL v0.9.9</div>
+    <div class="terminal">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="stat">
+                <span class="stat-label">🏦 Portfolio:</span>
+                <span id="portfolioValue" class="stat-value">$100,000</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">🔥 Survival Score:</span>
+                <span id="survivalScore" class="stat-value">100</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">⛽ Live Gas:</span>
+                <span id="liveGas" class="stat-value">Loading...</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">🎯 Scenario:</span>
+                <span id="scenarioCount" class="stat-value">#1</span>
+            </div>
         </div>
-        <nav class="beta-nav">
-            <a href="index.html" class="nav-link active">🏠 Dashboard</a>
-            <a href="analytics.html" class="nav-link">📊 Analytics</a>
-            <a href="quiz-panel.html" class="nav-link" target="_blank">🎮 Play Game</a>
-            <a href="memes.html" class="nav-link">😂 Memes</a>
-            <a href="lore.html" class="nav-link">📖 Lore</a>
-        </nav>
-    </header>
 
-    <!-- Main Content -->
-    <main class="dashboard">
-        <div class="dashboard-grid">
-            <!-- Holdings Widget -->
-            <div class="dashboard-widget">
-                <h3 class="widget-title"><i class="fas fa-crosshairs"></i> YOUR GCAB ARSENAL</h3>
-                <div class="holdings-display">
-                    <div class="gcab-amount" id="gcab-balance">-- GCAB</div>
-                    <div class="gcab-value" id="gcab-value">$--</div>
-                    <button class="primary-btn" onclick="buyGCAB()">
-                        <i class="fas fa-gas-pump"></i> REFUEL FOR GAME
-                    </button>
+        <!-- Main Game Container -->
+        <div class="game-container">
+            <!-- Left Panel: Scenario -->
+            <div class="scenario-panel">
+                <div class="panel-header">
+                    <h2 id="scenarioType">DEGEN SIMULATION v2.1</h2>
+                    <div class="scenario-meta">
+                        <span id="scenarioDifficulty" class="difficulty-easy">EASY</span>
+                        <span id="scenarioTime" class="time-indicator">⌛ Real-time</span>
+                    </div>
                 </div>
-                <div class="game-tip" style="margin-top: 1rem; color: var(--alpha-blue);">
-                    <i class="fas fa-lightbulb"></i> Tip: Hold more GCAB for better game perks!
-                </div>
-            </div>
-
-            <!-- Game Activity -->
-            <div class="dashboard-widget">
-                <h3 class="widget-title"><i class="fas fa-gamepad"></i> LIVE GAME ACTIVITY</h3>
-                <div class="game-feed" id="game-feed">
-                    <!-- Feed items added by JS -->
-                </div>
-                <button class="primary-btn" onclick="joinGame()">
-                    <i class="fas fa-rocket"></i> JOIN BATTLE
-                </button>
-            </div>
-
-            <!-- Copium Calculator -->
-            <div class="dashboard-widget">
-                <h3 class="widget-title"><i class="fas fa-flask"></i> COPIUM CALIBRATOR</h3>
-                <div style="margin: 1.5rem 0;">
-                    <input type="number" 
-                           id="risk-amount" 
-                           placeholder="GCAB to risk" 
-                           value="1000"
-                           style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 2px solid var(--alpha-blue); border-radius: 8px; color: white; margin-bottom: 1rem;">
+                
+                <div class="scenario-content">
+                    <!-- Dynamic Scenario Image -->
+                    <div class="scenario-visual">
+                        <img id="scenarioImage" src="" alt="Scenario visual" class="meme-image">
+                        <div class="image-overlay" id="imageOverlay"></div>
+                    </div>
                     
-                    <label style="color: var(--alpha-blue); display: block; margin-bottom: 0.5rem;">
-                        Delusion Level: <span id="delusion-value">95%</span>
-                    </label>
-                    <input type="range" 
-                           id="delusion-slider" 
-                           min="1" 
-                           max="100" 
-                           value="95"
-                           style="width: 100%; margin-bottom: 1rem;">
-                </div>
-                <button class="primary-btn" onclick="calculateCopium()">
-                    <i class="fas fa-calculator"></i> CALCULATE WIN POTENTIAL
-                </button>
-                <div id="copium-result" style="margin-top: 1.5rem; padding: 1rem; background: rgba(255,0,85,0.1); border-radius: 8px; text-align: center;">
-                    Potential: --
-                </div>
-            </div>
-
-            <!-- Contract -->
-            <div class="dashboard-widget">
-                <h3 class="widget-title"><i class="fas fa-file-contract"></i> CONTRACT & LINKS</h3>
-                <div class="contract-display" id="contract-display">
-                    0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07
-                </div>
-                <div class="copy-buttons">
-                    <button class="secondary-btn" onclick="copyContract()">
-                        <i class="far fa-copy"></i> Copy Contract
-                    </button>
-                    <button class="secondary-btn" onclick="copyTicker()">
-                        <i class="fas fa-hashtag"></i> Copy $GCAβ
-                    </button>
-                </div>
-                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; justify-content: center;">
-                    <a href="https://basescan.org/token/0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
-                       class="nav-link" target="_blank" style="padding: 0.5rem 1rem;">Basescan</a>
-                    <a href="https://app.uniswap.org/swap?chain=base&outputCurrency=0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
-                       class="nav-link" target="_blank" style="padding: 0.5rem 1rem;">Uniswap</a>
-                    <a href="https://dexscreener.com/base/0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
-                       class="nav-link" target="_blank" style="padding: 0.5rem 1rem;">DexScreener</a>
+                    <!-- Scenario Text -->
+                    <div class="scenario-text">
+                        <h3 id="scenarioTitle">INITIALIZING DEGEN PROTOCOL...</h3>
+                        <p id="scenarioDescription" class="description">
+                            Loading your personalized crypto nightmare...
+                        </p>
+                        
+                        <!-- Consequences Tracker -->
+                        <div class="consequences-tracker">
+                            <div class="consequence-tag" id="consequence1">Trust Issues: None</div>
+                            <div class="consequence-tag" id="consequence2">Gas PTSD: None</div>
+                            <div class="consequence-tag" id="consequence3">Rug Memory: None</div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Right Panel: Choices & Outcomes -->
+            <div class="choices-panel">
+                <div class="panel-header">
+                    <h2>YOUR MOVE, DEGEN</h2>
+                    <div class="decision-history">
+                        <span id="correctChoices">✓ 0</span>
+                        <span id="badChoices">✗ 0</span>
+                    </div>
+                </div>
+                
+                <!-- Dynamic Options Container -->
+                <div class="options-container" id="optionsContainer">
+                    <!-- Options loaded dynamically -->
+                </div>
+                
+                <!-- Outcome Display -->
+                <div class="outcome-container" id="outcomeContainer">
+                    <div class="outcome-header">
+                        <span id="outcomeIcon">⚡</span>
+                        <h3 id="outcomeTitle">CHOOSE YOUR FATE</h3>
+                    </div>
+                    <p id="outcomeText" class="outcome-text">
+                        Each decision permanently alters your simulation...
+                    </p>
+                    <div class="outcome-stats">
+                        <div class="stat-change">
+                            <span class="stat-label">Portfolio Change:</span>
+                            <span id="portfolioChange" class="change-neutral">$0</span>
+                        </div>
+                        <div class="stat-change">
+                            <span class="stat-label">Risk Level:</span>
+                            <span id="riskLevel" class="risk-low">Low</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="action-btn" id="panicSellBtn" disabled>
+                        🚨 PANIC SELL (-20%)
+                    </button>
+                    <button class="action-btn" id="apeInBtn" disabled>
+                        🦍 APE IN (+100%/-100%)
+                    </button>
+                    <button class="action-btn" id="nextScenarioBtn" onclick="generateNextScenario()">
+                        ⏩ NEXT NIGHTMARE
+                    </button>
+                </div>
+            </div>
         </div>
-    </main>
 
-    <!-- Footer -->
-    <footer class="beta-footer">
-        <div class="footer-content">
-            <p><strong>GCAB BETA CONTROL PANEL v0.9.9</strong> | Companion tool for GCAB Hodler Social Game</p>
-            <p>Alpha flex, Beta vibes, Forever. | Panel sync: <span id="sync-status">Active</span></p>
-            <p class="easter-egg-hint">Hint: Click the beta badge 7 times for secret mode...</p>
+        <!-- Bottom Bar: Narrative Log -->
+        <div class="narrative-log">
+            <div class="log-header">
+                <h3>📜 NARRATIVE LOG</h3>
+                <button class="clear-log" onclick="clearLog()">Clear</button>
+            </div>
+            <div class="log-entries" id="logEntries">
+                <div class="log-entry">
+                    <span class="log-time">[00:00]</span>
+                    <span class="log-text">Welcome to the Infinite Degen Simulator. Your poor financial decisions await...</span>
+                </div>
+            </div>
         </div>
-    </footer>
+    </div>
 
-    <script>
-        // ===== CONFIG =====
-        const CONFIG = {
-            CONTRACT: '0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07',
-            GAME_URL: './quiz-panel.html',
-            UNISWAP_URL: 'https://app.uniswap.org/swap?chain=base&outputCurrency=0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07',
-            PRICE: 0.00001
-        };
-
-        // ===== INITIALIZATION =====
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 GCAB Panel Initializing...');
-            
-            // Setup slider
-            const slider = document.getElementById('delusion-slider');
-            const value = document.getElementById('delusion-value');
-            if (slider) {
-                slider.addEventListener('input', function() {
-                    value.textContent = `${this.value}%`;
-                });
-            }
-            
-            // Load data
-            updateHoldings();
-            updateGameFeed();
-            startDataRefresh();
-            
-            // Easter egg
-            setupEasterEgg();
-            
-            console.log('✅ GCAB Panel Ready');
-        });
-
-
-// ===== ANIMATION STYLES =====
-const animationStyles = document.createElement('style');
-animationStyles.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.7; }
-        100% { opacity: 1; }
-    }
+    <!-- Audio Elements -->
+    <audio id="soundClick" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" preload="auto"></audio>
+    <audio id="soundSuccess" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" preload="auto"></audio>
+    <audio id="soundFail" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
     
-    .positive { color: #00ffaa !important; }
-    .negative { color: #ff0055 !important; }
-    .neutral { color: #ffaa00 !important; }
-`;
-document.head.appendChild(animationStyles);
-
-        // ===== FUNCTIONS =====
-        function updateHoldings() {
-            const balance = 1000000 + Math.floor(Math.random() * 500000);
-            const value = balance * CONFIG.PRICE;
-            
-            document.getElementById('gcab-balance').textContent = `${balance.toLocaleString()} GCAB`;
-            document.getElementById('gcab-value').textContent = `$${value.toFixed(2)}`;
-        }
-
-        function updateGameFeed() {
-            const activities = [
-                { player: 'Chad_Alpha', action: 'scored 1,200 points!', time: '2 min ago' },
-                { player: 'Based_Beta', action: 'won daily challenge!', time: '5 min ago' },
-                { player: 'GCAB_OG', action: 'bought 50,000 GCAB', time: '10 min ago' },
-                { player: 'Meme_Lord', action: 'shared epic meme', time: '15 min ago' }
-            ];
-            
-            const feed = document.getElementById('game-feed');
-            if (!feed) return;
-            
-            feed.innerHTML = '';
-            activities.forEach(activity => {
-                const item = document.createElement('div');
-                item.className = 'feed-item';
-                item.innerHTML = `
-                    <strong style="color: var(--alpha-blue)">${activity.player}</strong> 
-                    ${activity.action}
-                    <span style="color: #888; float: right;">${activity.time}</span>
-                `;
-                feed.appendChild(item);
-            });
-        }
-
-        function calculateCopium() {
-            const amount = parseInt(document.getElementById('risk-amount').value) || 1000;
-            const delusion = parseInt(document.getElementById('delusion-slider').value) || 95;
-            
-            const potential = amount * (delusion / 100) * 2;
-            const result = document.getElementById('copium-result');
-            
-            const messages = [
-                `Potential win: ${potential.toFixed(0)} GCAB`,
-                `Copium needed: ${Math.round(potential/100)}mg`,
-                `Risk/Reward: 1:${(potential/amount).toFixed(1)}`,
-                `${delusion}% delusion = ${potential.toFixed(0)} GCAB potential`
-            ];
-            
-            result.textContent = `Potential: ${messages[Math.floor(Math.random() * messages.length)]}`;
-            result.style.animation = 'none';
-            setTimeout(() => {
-                result.style.animation = 'pulse 0.5s';
-            }, 10);
-        }
-
-        function buyGCAB() {
-            window.open(CONFIG.UNISWAP_URL, '_blank');
-            showNotification('Opening Uniswap to buy $GCAβ...');
-        }
-
-        function joinGame() {
-            window.open(CONFIG.GAME_URL, '_blank');
-            showNotification('Launching game... Good luck!');
-        }
-
-        function copyContract() {
-            navigator.clipboard.writeText(CONFIG.CONTRACT);
-            showNotification('Contract address copied!');
-        }
-
-        function copyTicker() {
-            navigator.clipboard.writeText('$GCAβ');
-            showNotification('$GCAβ ticker copied!');
-        }
-
-        function startDataRefresh() {
-            setInterval(updateHoldings, 30000);
-            setInterval(updateGameFeed, 15000);
-            
-            // Update sync status
-            const statuses = ['Active', 'Syncing', 'Connected', 'Live'];
-            setInterval(() => {
-                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-                document.getElementById('sync-status').textContent = randomStatus;
-            }, 5000);
-        }
-
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.cssText = `
-                position: fixed;
-                top: 100px;
-                right: 20px;
-                background: var(--liquidity-red);
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                z-index: 1000;
-                animation: slideIn 0.3s ease;
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
-            
-            // Add animation styles
-            if (!document.querySelector('#notification-styles')) {
-                const style = document.createElement('style');
-                style.id = 'notification-styles';
-                style.textContent = `
-                    @keyframes slideIn {
-                        from { transform: translateX(100%); opacity: 0; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-                    @keyframes slideOut {
-                        from { transform: translateX(0); opacity: 1; }
-                        to { transform: translateX(100%); opacity: 0; }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-        }
-
-        function setupEasterEgg() {
-            let clicks = 0;
-            const badge = document.querySelector('.beta-badge');
-            
-            if (badge) {
-                badge.addEventListener('click', () => {
-                    clicks++;
-                    if (clicks === 7) {
-                        activateBetaMode();
-                        clicks = 0;
-                    }
-                });
-            }
-        }
-
-        function activateBetaMode() {
-            document.body.style.animation = 'glitch-1 0.5s infinite';
-            showNotification('🎮 BETA MODE ACTIVATED! Unlimited copium!');
-            
-            // Change all numbers to ∞
-            document.querySelectorAll('.gcab-amount, .gcab-value').forEach(el => {
-                el.textContent = el.textContent.includes('GCAB') ? '∞ GCAB' : '$∞';
-            });
-            
-            setTimeout(() => {
-                document.body.style.animation = '';
-                updateHoldings();
-            }, 10000);
-        }
-
-        // Add glitch animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes glitch-1 {
-                0% { transform: translate(0); }
-                20% { transform: translate(-2px, 2px); }
-                40% { transform: translate(-2px, -2px); }
-                60% { transform: translate(2px, 2px); }
-                80% { transform: translate(2px, -2px); }
-                100% { transform: translate(0); }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
-    <!-- Load GCAB Data -->
-<script src="js/data.js"></script>
-
-<!-- Your existing dashboard JS -->
-<script>
-// ===== REAL GCAB DATA INTEGRATION =====
-let liveUpdateInterval = null;
-
-async function loadRealGCABData() {
-    try {
-        const data = await GCABData.getLiveData();
-        
-        // Update price display
-        const priceElement = document.getElementById('gcab-balance');
-        const valueElement = document.getElementById('gcab-value');
-        
-        if (priceElement) {
-            priceElement.innerHTML = `
-                ${GCABData.formatPrice(data.market.price)}
-                <span style="font-size: 0.7em; color: ${data.market.priceChange24h >= 0 ? '#00ffaa' : '#ff0055'}">
-                    ${data.market.priceChange24h >= 0 ? '↗' : '↘'} ${Math.abs(data.market.priceChange24h).toFixed(2)}%
-                </span>
-            `;
-        }
-        
-        if (valueElement) {
-            valueElement.textContent = `MC: ${GCABData.formatNumber(data.market.fdv)}`;
-        }
-        
-        // Update holders if element exists
-        const holdersElement = document.getElementById('holders');
-        if (holdersElement) {
-            holdersElement.textContent = GCABData.formatLargeNumber(data.holders.count);
-        }
-        
-        // Update game feed with real transactions
-        updateGameFeedWithTransactions(data.transactions);
-        
-        // Show data source indicator
-        showDataSourceIndicator(data.isReal);
-        
-        console.log('✅ GCAB: Data updated', data.market);
-        
-    } catch (error) {
-        console.error('❌ GCAB: Failed to load data:', error);
-    }
-}
-
-function updateGameFeedWithTransactions(transactions) {
-    const feed = document.getElementById('game-feed');
-    if (!feed) return;
-    
-    feed.innerHTML = '';
-    
-    transactions.forEach(tx => {
-        const item = document.createElement('div');
-        item.className = 'feed-item';
-        
-        const icon = tx.type === 'BUY' ? '🟢' : tx.type === 'SELL' ? '🔴' : '🟡';
-        const timeAgo = getTimeAgo(tx.timestamp);
-        
-        item.innerHTML = `
-            <div class="player">${tx.from}</div>
-            <div class="action">${icon} ${tx.type.toLowerCase()} ${tx.value} GCAB</div>
-            <div class="time">${timeAgo}</div>
-        `;
-        
-        feed.appendChild(item);
-    });
-    
-    // Add a real-time indicator
-    const indicator = document.createElement('div');
-    indicator.className = 'feed-item';
-    indicator.style.background = 'rgba(0, 238, 255, 0.1)';
-    indicator.innerHTML = `
-        <div class="player" style="color: var(--alpha-blue)">LIVE DATA</div>
-        <div class="action">🟢 Real-time GCAB transactions</div>
-        <div class="time">Now</div>
-    `;
-    feed.insertBefore(indicator, feed.firstChild);
-}
-
-function getTimeAgo(timestamp) {
-    const now = Date.now();
-    const diff = now - timestamp;
-    
-    if (diff < 60000) return 'Just now';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-    return `${Math.floor(diff / 86400000)}d ago`;
-}
-
-function showDataSourceIndicator(isReal) {
-    // Remove existing indicator
-    const existing = document.getElementById('data-source-indicator');
-    if (existing) existing.remove();
-    
-    const indicator = document.createElement('div');
-    indicator.id = 'data-source-indicator';
-    indicator.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 10px; height: 10px; border-radius: 50%; background: ${isReal ? '#00ffaa' : '#ffaa00'};"></div>
-            <span>${isReal ? 'LIVE DATA' : 'MOCK DATA'} • Updated: ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-        </div>
-    `;
-    
-    indicator.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(5, 5, 5, 0.9);
-        border: 2px solid ${isReal ? '#00ffaa' : '#ffaa00'};
-        color: ${isReal ? '#00ffaa' : '#ffaa00'};
-        padding: 8px 15px;
-        border-radius: 10px;
-        font-size: 0.9rem;
-        z-index: 1000;
-        backdrop-filter: blur(10px);
-        animation: slideIn 0.3s ease;
-    `;
-    
-    document.body.appendChild(indicator);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        indicator.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => {
-            if (indicator.parentNode) {
-                indicator.parentNode.removeChild(indicator);
-            }
-        }, 300);
-    }, 5000);
-}
-
-// ===== INITIALIZATION =====
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 GCAB Dashboard Initializing...');
-    
-    // Load GCAB Data script
-    if (!window.GCABData) {
-        const script = document.createElement('script');
-        script.src = 'js/data.js';
-        script.onload = initializeDashboard;
-        document.head.appendChild(script);
-    } else {
-        initializeDashboard();
-    }
-    
-    function initializeDashboard() {
-        // Start live updates
-        const updater = GCABData.startLiveUpdates(loadRealGCABData, 30000);
-        liveUpdateInterval = updater;
-        
-        // Add refresh button
-        addRefreshButton();
-        
-        // Add keyboard shortcut
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-                e.preventDefault();
-                updater.refresh();
-            }
-        });
-        
-        console.log('✅ GCAB Dashboard: Live data enabled');
-    }
-});
-
-function addRefreshButton() {
-    const button = document.createElement('button');
-    button.id = 'refresh-data-btn';
-    button.innerHTML = '🔄 Refresh Data';
-    button.onclick = () => {
-        GCABData.getLiveData().then(loadRealGCABData);
-        button.style.transform = 'rotate(180deg)';
-        setTimeout(() => {
-            button.style.transform = 'rotate(0deg)';
-        }, 300);
-    };
-    
-    button.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        background: var(--alpha-blue);
-        color: var(--bg-dark);
-        border: none;
-        padding: 10px 20px;
-        border-radius: 10px;
-        cursor: pointer;
-        z-index: 1000;
-        font-family: inherit;
-        font-weight: bold;
-        transition: transform 0.3s;
-    `;
-    
-    document.body.appendChild(button);
-}
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="engine.js"></script>
+    <script src="game.js"></script>
 </body>
 </html>
