@@ -3,444 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GCAB BETA CONTROL PANEL 🎮</title>
-    
-    <!-- Load Shared Ecosystem -->
-    <script src="shared/config.js"></script>
-    <script src="shared/utils.js"></script>
-    <script src="shared/auth-shared.js"></script>
-    <script src="shared/event-bridge.js"></script>
-    <script src="shared/state-manager.js"></script>
-    <script src="shared/api-client.js"></script>
-    <script src="shared/sync-engine.js"></script>
-    
+    <title>GCAβ Beta Control Panel 🎮</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* RESET & BASE */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        :root {
-            --alpha: #00eeff;
-            --beta: #ffaa00;
-            --based: #9d00ff;
-            --delusion: #00ffaa;
-            --liquidity: #ff0055;
-            --dark: #0a0a0a;
-            --darker: #050505;
-            --glow: 0 0 10px;
-        }
-        
-        body {
-            background: var(--dark);
-            color: white;
-            font-family: 'Courier New', monospace;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        /* GLITCH BACKGROUND */
-        .glitch-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(45deg, transparent 30%, rgba(0, 238, 255, 0.03) 50%, transparent 70%),
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 0, 85, 0.02) 3px, transparent 4px);
-            z-index: -1;
-            animation: glitch-bg 20s infinite linear;
-        }
-        
-        @keyframes glitch-bg {
-            0% { background-position: 0 0; }
-            100% { background-position: 100px 100px; }
-        }
-        
-        /* HEADER */
-        .panel-header {
-            background: rgba(5, 5, 5, 0.95);
-            border-bottom: 3px solid var(--alpha);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-        }
-        
-        .branding {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .panel-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-        
-        .gcab {
-            color: var(--alpha);
-            text-shadow: var(--glow) var(--alpha);
-        }
-        
-        .beta-panel {
-            color: var(--beta);
-            font-size: 1.2rem;
-        }
-        
-        .panel-badges {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .game-connected {
-            background: var(--delusion);
-            color: var(--dark);
-            animation: pulse 2s infinite;
-        }
-        
-        .beta-status {
-            background: var(--liquidity);
-            color: white;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        /* NAVIGATION */
-        .panel-nav {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid transparent;
-            border-radius: 10px;
-            padding: 0.8rem 1.2rem;
-            color: var(--beta);
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: all 0.3s;
-            min-width: 80px;
-        }
-        
-        .nav-btn:hover {
-            background: rgba(255, 170, 0, 0.1);
-            border-color: var(--beta);
-            transform: translateY(-2px);
-        }
-        
-        .nav-btn.active {
-            background: var(--beta);
-            color: var(--dark);
-            border-color: var(--beta);
-        }
-        
-        .nav-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.3rem;
-        }
-        
-        .nav-label {
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-        
-        .game-cta {
-            background: linear-gradient(45deg, var(--based), var(--liquidity));
-            color: white;
-            border: none !important;
-            animation: pulse 1.5s infinite;
-        }
-        
-        /* MAIN LAYOUT */
-        .panel-grid {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
+        /* ADDITIONAL STYLES FOR CONTROL PANEL */
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
         }
         
-        /* WIDGET STYLES */
-        .widget {
+        .dashboard-widget {
             background: rgba(255, 255, 255, 0.05);
-            border: 2px solid;
+            border: 2px solid var(--based-purple);
             border-radius: 15px;
             padding: 1.5rem;
             transition: all 0.3s;
         }
         
-        .widget:hover {
+        .dashboard-widget:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 20px rgba(157, 0, 255, 0.2);
         }
         
-        .holdings-widget {
-            grid-column: span 4;
-            border-color: var(--alpha);
-        }
-        
-        .game-feed-widget {
-            grid-column: span 4;
-            border-color: var(--delusion);
-        }
-        
-        .copium-widget {
-            grid-column: span 4;
-            border-color: var(--liquidity);
-        }
-        
-        .quickplay-widget {
-            grid-column: span 6;
-            border-color: var(--beta);
-        }
-        
-        .contract-widget {
-            grid-column: span 6;
-            border-color: var(--based);
-        }
-        
-        .widget h3 {
-            color: inherit;
-            margin-bottom: 1rem;
+        .widget-title {
+            color: var(--alpha-blue);
             font-size: 1.3rem;
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
         
-        /* HOLDINGS WIDGET */
         .holdings-display {
             text-align: center;
-            margin: 1.5rem 0;
+            padding: 1rem;
         }
-        
-        .holding-amount {
-            font-size: 2.5rem;
+
+        .gcaβ-amount {
+            font-size: 2.8rem;
             font-weight: bold;
-            color: var(--alpha);
-            text-shadow: var(--glow) var(--alpha);
-            margin-bottom: 0.5rem;
+            color: var(--alpha-blue);
+            text-shadow: var(--text-glow);
+            margin: 1rem 0;
         }
-        
-        .holding-value {
+
+        .gcaβ-value {
             font-size: 1.5rem;
-            color: var(--delusion);
+            color: var(--delusion-green);
             margin-bottom: 1.5rem;
         }
         
-        .btn-refuel {
-            background: linear-gradient(45deg, var(--alpha), var(--delusion));
-            color: var(--dark);
+        .primary-btn {
+            background: linear-gradient(45deg, var(--alpha-blue), var(--based-purple));
+            color: white;
             border: none;
             border-radius: 10px;
-            padding: 0.8rem 2rem;
+            padding: 1rem 2rem;
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: all 0.3s;
             display: block;
-            margin: 0 auto;
-        }
-        
-        .btn-refuel:hover {
-            transform: scale(1.05);
-        }
-        
-        .game-tip {
+            width: 100%;
             margin-top: 1rem;
-            padding: 0.8rem;
-            background: rgba(0, 238, 255, 0.1);
-            border-radius: 8px;
-            color: var(--alpha);
-            font-size: 0.9rem;
         }
         
-        /* GAME FEED WIDGET */
-        .feed {
-            max-height: 200px;
+        .primary-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 238, 255, 0.3);
+        }
+        
+        .game-feed {
+            max-height: 300px;
             overflow-y: auto;
             margin: 1rem 0;
         }
         
         .feed-item {
             background: rgba(255, 255, 255, 0.03);
-            border-left: 3px solid var(--delusion);
+            border-left: 3px solid var(--delusion-green);
             padding: 0.8rem;
             margin-bottom: 0.5rem;
-            border-radius: 0 5px 5px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-radius: 0 8px 8px 0;
         }
         
-        .player {
-            color: var(--alpha);
-            font-weight: bold;
-        }
-        
-        .action {
-            color: white;
-        }
-        
-        .time {
-            color: #888;
-            font-size: 0.8rem;
-        }
-        
-        .btn-join {
-            background: linear-gradient(45deg, var(--delusion), var(--based));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.8rem 2rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s;
-            display: block;
-            margin: 1rem auto 0;
-        }
-        
-        .btn-join:hover {
-            transform: scale(1.05);
-        }
-        
-        /* COPIUM CALIBRATOR */
-        .copium-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .copium-inputs input {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid var(--liquidity);
-            border-radius: 8px;
-            color: white;
-            padding: 0.8rem;
-            font-family: inherit;
-            font-size: 1.1rem;
-            text-align: center;
-        }
-        
-        .btn-calculate {
-            background: linear-gradient(45deg, var(--liquidity), var(--based));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.8rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s;
-            width: 100%;
-        }
-        
-        .btn-calculate:hover {
-            transform: scale(1.02);
-        }
-        
-        .copium-result {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: rgba(255, 0, 85, 0.1);
-            border-radius: 10px;
-            text-align: center;
-            font-size: 1.2rem;
-            color: var(--liquidity);
-        }
-        
-        /* QUICK PLAY */
-        .quicklinks {
+        .quick-links {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
             margin-top: 1rem;
         }
         
-        .quicklink {
+        .quick-link {
             background: rgba(255, 170, 0, 0.1);
-            border: 2px solid var(--beta);
+            border: 2px solid var(--beta-orange);
             border-radius: 10px;
-            padding: 1.5rem;
+            padding: 1.2rem;
+            text-align: center;
             text-decoration: none;
             color: white;
-            text-align: center;
             transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
         }
         
-        .quicklink:hover {
+        .quick-link:hover {
             background: rgba(255, 170, 0, 0.2);
             transform: translateY(-3px);
         }
         
-        .quicklink div:first-child {
+        .quick-link-icon {
             font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
         
-        .quicklink div:last-child {
+        .quick-link-title {
+            color: var(--beta-orange);
             font-weight: bold;
-            color: var(--beta);
         }
         
-        /* CONTRACT WIDGET */
+        /* Contract display */
         .contract-display {
-            background: rgba(157, 0, 255, 0.1);
-            border: 2px solid var(--based);
+            background: rgba(255, 0, 85, 0.1);
+            border: 2px solid var(--liquidity-red);
             border-radius: 10px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            text-align: center;
-        }
-        
-        .contract-address {
+            padding: 1.2rem;
+            margin: 1.5rem 0;
             font-family: monospace;
-            font-size: 1.1rem;
             word-break: break-all;
-            color: white;
-            margin-bottom: 1rem;
+            text-align: center;
         }
         
         .copy-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
+            margin-top: 1rem;
         }
         
-        .btn-copy {
-            background: var(--based);
+        .secondary-btn {
+            background: var(--liquidity-red);
             color: white;
             border: none;
             border-radius: 8px;
@@ -451,638 +154,344 @@
             transition: background 0.3s;
         }
         
-        .btn-copy:hover {
-            background: #ad00ff;
+        .secondary-btn:hover {
+            background: #ff3366;
         }
         
-        .contract-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .contract-link {
-            color: var(--alpha);
-            text-decoration: none;
-            font-size: 0.9rem;
-            padding: 0.5rem;
-            border: 1px solid var(--alpha);
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-        
-        .contract-link:hover {
-            background: var(--alpha);
-            color: var(--dark);
-        }
-        
-        /* FOOTER */
-        .panel-footer {
-            background: rgba(5, 5, 5, 0.95);
-            border-top: 3px solid var(--based);
-            padding: 2rem;
-            text-align: center;
-            margin-top: 3rem;
-        }
-        
-        .footer-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .footer-content p {
-            margin-bottom: 1rem;
-            line-height: 1.6;
-            color: #aaa;
-        }
-        
-        .sync-status {
-            color: var(--delusion);
-            font-size: 0.9rem;
-        }
-        
-        /* RESPONSIVE */
-        @media (max-width: 1200px) {
-            .panel-grid {
-                grid-template-columns: repeat(6, 1fr);
-            }
-            
-            .holdings-widget,
-            .game-feed-widget,
-            .copium-widget {
-                grid-column: span 3;
-            }
-            
-            .quickplay-widget,
-            .contract-widget {
-                grid-column: span 6;
-            }
-        }
-        
+        /* Responsive */
         @media (max-width: 768px) {
-            .panel-header {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+            
+            .copy-buttons {
                 flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .panel-nav {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .panel-grid {
-                grid-template-columns: 1fr;
-                padding: 0 1rem;
-            }
-            
-            .widget {
-                grid-column: span 1 !important;
-            }
-            
-            .quicklinks {
-                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- GLITCH BACKGROUND -->
+    <!-- Glitch Background -->
     <div class="glitch-bg"></div>
     
-    <!-- HEADER -->
-    <header class="panel-header">
-        <div class="branding">
-            <div class="panel-title">
-                <span class="gcab">GCAB</span> 
-                <span class="beta-panel">BETA CONTROL PANEL</span>
-            </div>
-            <div class="panel-badges">
-                <span class="badge game-connected">🎮 GAME READY</span>
-                <span class="badge beta-status">BETA v0.9.9</span>
-            </div>
+    <!-- Header -->
+    <header class="beta-header">
+        <div class="logo-container">
+            <h1 class="glitch-text" data-text="GCAβ BETA CONTROL">GCAβ BETA CONTROL</h1>
+            <div class="beta-badge">PANEL v0.9.9</div>
         </div>
-        
-        <nav class="panel-nav">
-            <a href="control-panel.html" class="nav-btn active">
-                <div class="nav-icon">📊</div>
-                <div class="nav-label">Dashboard</div>
-            </a>
-            <a href="analytics.html" class="nav-btn">
-                <div class="nav-icon">📈</div>
-                <div class="nav-label">Analytics</div>
-            </a>
-            <a href="YOUR_GAME_URL_HERE" class="nav-btn game-cta" target="_blank">
-                <div class="nav-icon">🎮</div>
-                <div class="nav-label">Play Game</div>
-            </a>
-            <a href="memes.html" class="nav-btn">
-                <div class="nav-icon">😂</div>
-                <div class="nav-label">Memes</div>
-            </a>
-            <a href="lore.html" class="nav-btn">
-                <div class="nav-icon">📖</div>
-                <div class="nav-label">Intel</div>
-            </a>
+        <nav class="beta-nav">
+            <a href="index.html" class="nav-link active">🏠 Dashboard</a>
+            <a href="analytics.html" class="nav-link">📊 Analytics</a>
+            <a href="quiz-panel.html" class="nav-link" target="_blank">🎮 Play Game</a>
+            <a href="memes.html" class="nav-link">😂 Memes</a>
+            <a href="lore.html" class="nav-link">📖 Lore</a>
         </nav>
     </header>
 
-    <!-- MAIN CONTENT -->
-    <main class="panel-grid">
-        <!-- YOUR GCAB ARSENAL -->
-        <section class="widget holdings-widget">
-            <h3>🎯 YOUR GCAB ARSENAL</h3>
-            <div class="holdings-display">
-                <div class="holding-amount" id="gcab-balance">-- GCAB</div>
-                <div class="holding-value" id="gcab-value">$--</div>
-                <button class="btn-refuel" onclick="buyGCAB()">
-                    ⛽ REFUEL FOR GAME
+    <!-- Main Content -->
+    <main class="dashboard">
+        <div class="dashboard-grid">
+            <!-- Holdings Widget -->
+            <div class="dashboard-widget">
+                <h3 class="widget-title"><i class="fas fa-crosshairs"></i> YOUR GCAβ ARSENAL</h3>
+                <div class="holdings-display">
+                    <div class="gcaβ-amount" id="gcaβ-balance">-- GCAβ</div>
+                    <div class="gcaβ-value" id="gcaβ-value">$--</div>
+                    <button class="primary-btn" onclick="buyGCAβ()">
+                        <i class="fas fa-gas-pump"></i> REFUEL FOR GAME
+                    </button>
+                </div>
+                <div class="game-tip" style="margin-top: 1rem; color: var(--alpha-blue);">
+                    <i class="fas fa-lightbulb"></i> Tip: Hold more GCAβ for better game perks!
+                </div>
+            </div>
+
+            <!-- Game Activity -->
+            <div class="dashboard-widget">
+                <h3 class="widget-title"><i class="fas fa-gamepad"></i> LIVE GAME ACTIVITY</h3>
+                <div class="game-feed" id="game-feed">
+                    <!-- Feed items added by JS -->
+                </div>
+                <button class="primary-btn" onclick="joinGame()">
+                    <i class="fas fa-rocket"></i> JOIN BATTLE
                 </button>
             </div>
-            <div class="game-tip">
-                💡 Tip: Hold more GCAB for better game perks!
-            </div>
-        </section>
 
-        <!-- LIVE GAME ACTIVITY -->
-        <section class="widget game-feed-widget">
-            <h3>🎮 LIVE GAME ACTIVITY</h3>
-            <div class="feed" id="game-feed">
-                <div class="feed-item">
-                    <span class="player">Player_0x123</span>
-                    <span class="action">just scored 1,200 points!</span>
-                    <span class="time">2 min ago</span>
+            <!-- Copium Calculator -->
+            <div class="dashboard-widget">
+                <h3 class="widget-title"><i class="fas fa-flask"></i> COPIUM CALIBRATOR</h3>
+                <div style="margin: 1.5rem 0;">
+                    <input type="number" 
+                           id="risk-amount" 
+                           placeholder="GCAβ to risk" 
+                           value="1000"
+                           style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 2px solid var(--alpha-blue); border-radius: 8px; color: white; margin-bottom: 1rem;">
+                    
+                    <label style="color: var(--alpha-blue); display: block; margin-bottom: 0.5rem;">
+                        Delusion Level: <span id="delusion-value">95%</span>
+                    </label>
+                    <input type="range" 
+                           id="delusion-slider" 
+                           min="1" 
+                           max="100" 
+                           value="95"
+                           style="width: 100%; margin-bottom: 1rem;">
                 </div>
-                <!-- More feed items will be added by JS -->
+                <button class="primary-btn" onclick="calculateCopium()">
+                    <i class="fas fa-calculator"></i> CALCULATE WIN POTENTIAL
+                </button>
+                <div id="copium-result" style="margin-top: 1.5rem; padding: 1rem; background: rgba(255,0,85,0.1); border-radius: 8px; text-align: center;">
+                    Potential: --
+                </div>
             </div>
-            <button class="btn-join" onclick="joinGame()">
-                🚀 JOIN BATTLE
-            </button>
-        </section>
 
-        <!-- COPIUM CALIBRATOR -->
-        <section class="widget copium-widget">
-            <h3>🧪 COPIUM CALIBRATOR</h3>
-            <div class="copium-inputs">
-                <input type="number" 
-                       id="risk-amount" 
-                       placeholder="GCAB to risk" 
-                       value="1000"
-                       min="100"
-                       max="1000000">
-            </div>
-            <button class="btn-calculate" onclick="calculateCopium()">
-                CALCULATE WIN POTENTIAL
-            </button>
-            <div class="copium-result" id="game-potential">
-                Potential: --
-            </div>
-        </section>
 
-        <!-- QUICK PLAY LINKS -->
-        <section class="widget quickplay-widget">
-            <h3>⚡ QUICK PLAY LINKS</h3>
-            <div class="quicklinks">
-                <a href="YOUR_GAME_URL#quick" class="quicklink" target="_blank">
-                    <div>🎯</div>
-                    <div>5-min Game</div>
-                </a>
-                <a href="YOUR_GAME_URL#daily" class="quicklink" target="_blank">
-                    <div>🏆</div>
-                    <div>Daily Challenge</div>
-                </a>
-                <a href="YOUR_GAME_URL#tournament" class="quicklink" target="_blank">
-                    <div>👑</div>
-                    <div>Tournament</div>
-                </a>
-            </div>
-        </section>
-
-        <!-- CONTRACT & LINKS -->
-        <section class="widget contract-widget">
-            <h3>📝 CONTRACT & LINKS</h3>
-            <div class="contract-display">
-                <div class="contract-address" id="contract-display">
+            <!-- Contract -->
+            <div class="dashboard-widget">
+                <h3 class="widget-title"><i class="fas fa-file-contract"></i> CONTRACT & LINKS</h3>
+                <div class="contract-display" id="contract-display">
                     0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07
                 </div>
                 <div class="copy-buttons">
-                    <button class="btn-copy" onclick="copyContract()">
-                        📋 Copy Contract
+                    <button class="secondary-btn" onclick="copyContract()">
+                        <i class="far fa-copy"></i> Copy Contract
                     </button>
-                    <button class="btn-copy" onclick="copyTicker()">
-                        📋 Copy $GCAB
+                    <button class="secondary-btn" onclick="copyTicker()">
+                        <i class="fas fa-hashtag"></i> Copy $GCAβ
                     </button>
                 </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; justify-content: center;">
+                    <a href="https://basescan.org/token/0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
+                       class="nav-link" target="_blank" style="padding: 0.5rem 1rem;">Basescan</a>
+                    <a href="https://app.uniswap.org/swap?chain=base&outputCurrency=0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
+                       class="nav-link" target="_blank" style="padding: 0.5rem 1rem;">Uniswap</a>
+                    <a href="https://dexscreener.com/base/0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
+                       class="nav-link" target="_blank" style="padding: 0.5rem 1rem;">DexScreener</a>
+                </div>
             </div>
-            <div class="contract-links">
-                <a href="https://basescan.org/token/0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
-                   class="contract-link" target="_blank">Basescan</a>
-                <a href="https://app.uniswap.org/swap?chain=base&outputCurrency=0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
-                   class="contract-link" target="_blank">Uniswap</a>
-                <a href="https://dexscreener.com/base/0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
-                   class="contract-link" target="_blank">DexScreener</a>
-                <a href="https://v2.bubblemaps.io/map?address=0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07&chain=base" 
-                   class="contract-link" target="_blank">Bubble Map</a>
-            </div>
-        </section>
+        </div>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="panel-footer">
+    <!-- Footer -->
+    <footer class="beta-footer">
         <div class="footer-content">
-            <p>
-                <strong>GCAB BETA CONTROL PANEL v0.9.9</strong> | 
-                Companion tool for the GCAB Hodler Social Game | 
-                Alpha flex, Beta vibes, Forever.
-            </p>
-            <p class="sync-status">
-                🔄 Panel sync: <span id="game-sync">Waiting for game connection...</span>
-            </p>
+            <p><strong>GCAβ BETA CONTROL PANEL v0.9.9</strong> | Companion tool for GCAβ Hodler Social Game</p>
+            <p>Alpha flex, Beta vibes, Forever. | Panel sync: <span id="sync-status">Active</span></p>
+            <p class="easter-egg-hint">Hint: Click the beta badge 7 times for secret mode...</p>
         </div>
     </footer>
 
-    <!-- PANEL LOGIC -->
     <script>
-        // ========== CONFIGURATION ==========
+        // ===== CONFIG =====
         const CONFIG = {
             CONTRACT: '0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07',
-            GAME_URL: 'YOUR_GAME_URL_HERE', // Replace with your actual game URL
+            GAME_URL: 'https://gchbeta.github.io/GCA/',
             UNISWAP_URL: 'https://app.uniswap.org/swap?chain=base&outputCurrency=0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07',
-            CURRENT_PRICE: 0.00001 // Mock price - replace with API
+            PRICE: 0.00001
         };
 
-        // ========== DOM ELEMENTS ==========
-        const elements = {
-            gcabBalance: document.getElementById('gcab-balance'),
-            gcabValue: document.getElementById('gcab-value'),
-            gameFeed: document.getElementById('game-feed'),
-            gamePotential: document.getElementById('game-potential'),
-            gameSync: document.getElementById('game-sync'),
-            contractDisplay: document.getElementById('contract-display'),
-            riskAmount: document.getElementById('risk-amount')
-        };
-
-        // ========== INITIALIZATION ==========
+        // ===== INITIALIZATION =====
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 GCAB Control Panel Initializing...');
+            console.log('🚀 GCAβ Panel Initializing...');
             
-            // Initialize shared ecosystem
-            if (window.GCABAuth) {
-                setupAuth();
+            // Setup slider
+            const slider = document.getElementById('delusion-slider');
+            const value = document.getElementById('delusion-value');
+            if (slider) {
+                slider.addEventListener('input', function() {
+                    value.textContent = `${this.value}%`;
+                });
             }
             
-            if (window.GCABEventBridge) {
-                setupEventBridge();
-            }
-            
-            if (window.GCABStateManager) {
-                setupStateManager();
-            }
-            
-            // Load initial data
+            // Load data
             updateHoldings();
             updateGameFeed();
-            updateSyncStatus();
+            startDataRefresh();
             
-            // Start periodic updates
-            setInterval(updateHoldings, 30000); // Every 30 seconds
-            setInterval(updateGameFeed, 10000); // Every 10 seconds
-            setInterval(updateSyncStatus, 5000); // Every 5 seconds
+            // Easter egg
+            setupEasterEgg();
             
-            console.log('✅ GCAB Control Panel Ready');
+            console.log('✅ GCAβ Panel Ready');
         });
 
-        // ========== ECOSYSTEM INTEGRATION ==========
-        function setupAuth() {
-            GCABAuth.onAuthChange((event) => {
-                console.log('Auth changed:', event.type);
-                
-                if (event.type === 'connected') {
-                    elements.gameSync.textContent = 'Connected! Loading player data...';
-                    updateHoldings();
-                }
-            });
-            
-            // Check for existing session
-            const player = GCABAuth.getPlayerData();
-            if (player && player.isAuthenticated) {
-                elements.gameSync.textContent = 'Connected to player wallet';
-            }
-        }
-
-        function setupEventBridge() {
-            // Listen for game events
-            GCABEventBridge.on('game:activity', (data) => {
-                addGameActivity(data);
-            });
-            
-            GCABEventBridge.on('player:update', (data) => {
-                updateHoldingsDisplay(data);
-            });
-        }
-
-        function setupStateManager() {
-            // Subscribe to state changes
-            GCABStateManager.subscribe('player', (playerData) => {
-                updateHoldingsDisplay(playerData);
-            });
-            
-            GCABStateManager.subscribe('game.activities', (activities) => {
-                updateGameFeed(activities);
-            });
-        }
-
-        // ========== CORE FUNCTIONS ==========
+        // ===== FUNCTIONS =====
         function updateHoldings() {
-            // Mock data - replace with real API
-            const mockData = {
-                balance: 1000000 + Math.floor(Math.random() * 500000),
-                value: 15 + Math.random() * 10
-            };
-            
-            updateHoldingsDisplay(mockData);
+            const balance = 1000000 + Math.floor(Math.random() * 500000);
+            const value = balance * CONFIG.PRICE;
+
+            document.getElementById('gcaβ-balance').textContent = `${balance.toLocaleString()} GCAβ`;
+            document.getElementById('gcaβ-value').textContent = `$${value.toFixed(2)}`;
         }
 
-        function updateHoldingsDisplay(data) {
-            if (!data) return;
+        function updateGameFeed() {
+            const activities = [
+                { player: 'Chad_Alpha', action: 'scored 1,200 points!', time: '2 min ago' },
+                { player: 'Based_Beta', action: 'won daily challenge!', time: '5 min ago' },
+                { player: 'GCAβ_OG', action: 'bought 50,000 GCAβ', time: '10 min ago' },
+                { player: 'Meme_Lord', action: 'shared epic meme', time: '15 min ago' }
+            ];
             
-            if (data.balance) {
-                elements.gcabBalance.textContent = `${data.balance.toLocaleString()} GCAB`;
-            }
+            const feed = document.getElementById('game-feed');
+            if (!feed) return;
             
-            if (data.value) {
-                elements.gcabValue.textContent = `$${data.value.toFixed(2)}`;
-            }
-        }
-
-        function updateGameFeed(activities) {
-            if (!activities) {
-                // Generate mock activities
-                activities = [
-                    {
-                        player: `Player_${Math.random().toString(36).substr(2, 6)}`,
-                        action: 'just scored ' + (100 + Math.floor(Math.random() * 1900)) + ' points!',
-                        time: Math.floor(Math.random() * 5) + 1 + ' min ago'
-                    },
-                    {
-                        player: `Chad_${Math.random().toString(36).substr(2, 4)}`,
-                        action: 'won the daily challenge!',
-                        time: Math.floor(Math.random() * 10) + 5 + ' min ago'
-                    },
-                    {
-                        player: `Alpha_${Math.random().toString(36).substr(2, 5)}`,
-                        action: 'bought ' + (1000 + Math.floor(Math.random() * 10000)) + ' GCAB',
-                        time: Math.floor(Math.random() * 20) + 10 + ' min ago'
-                    }
-                ];
-            }
-            
-            // Clear and update feed
-            elements.gameFeed.innerHTML = '';
-            
+            feed.innerHTML = '';
             activities.forEach(activity => {
-                const feedItem = document.createElement('div');
-                feedItem.className = 'feed-item';
-                feedItem.innerHTML = `
-                    <span class="player">${activity.player}</span>
-                    <span class="action">${activity.action}</span>
-                    <span class="time">${activity.time}</span>
+                const item = document.createElement('div');
+                item.className = 'feed-item';
+                item.innerHTML = `
+                    <strong style="color: var(--alpha-blue)">${activity.player}</strong> 
+                    ${activity.action}
+                    <span style="color: #888; float: right;">${activity.time}</span>
                 `;
-                elements.gameFeed.appendChild(feedItem);
+                feed.appendChild(item);
             });
-        }
-
-        function addGameActivity(data) {
-            const feedItem = document.createElement('div');
-            feedItem.className = 'feed-item';
-            feedItem.innerHTML = `
-                <span class="player">${data.player || 'Player'}</span>
-                <span class="action">${data.action}</span>
-                <span class="time">Just now</span>
-            `;
-            
-            elements.gameFeed.insertBefore(feedItem, elements.gameFeed.firstChild);
-            
-            // Keep only last 10 items
-            if (elements.gameFeed.children.length > 10) {
-                elements.gameFeed.removeChild(elements.gameFeed.lastChild);
-            }
         }
 
         function calculateCopium() {
-            const amount = parseInt(elements.riskAmount.value) || 1000;
+            const amount = parseInt(document.getElementById('risk-amount').value) || 1000;
+            const delusion = parseInt(document.getElementById('delusion-slider').value) || 95;
             
-            if (amount < 100) {
-                alert('Minimum risk: 100 GCAB');
-                return;
-            }
-            
-            // Mock calculation
-            const potential = amount * (1 + Math.random() * 2);
-            const loss = amount * (0.1 + Math.random() * 0.5);
+            const potential = amount * (delusion / 100) * 2;
+            const result = document.getElementById('copium-result');
             
             const messages = [
-                `Potential win: ${potential.toFixed(0)} GCAB`,
-                `Potential loss: ${loss.toFixed(0)} GCAB`,
-                `Risk/Reward: 1:${(potential/loss).toFixed(1)}`,
-                `Copium needed: ${Math.round(potential/100)}mg`
+                `Potential win: ${potential.toFixed(0)} GCAβ`,
+                `Copium needed: ${Math.round(potential/100)}mg`,
+                `Risk/Reward: 1:${(potential/amount).toFixed(1)}`,
+                `${delusion}% delusion = ${potential.toFixed(0)} GCAβ potential`
             ];
             
-            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-            elements.gamePotential.textContent = `Potential: ${randomMessage}`;
-            
-            // Animate
-            elements.gamePotential.style.transform = 'scale(1.1)';
+            result.textContent = `Potential: ${messages[Math.floor(Math.random() * messages.length)]}`;
+            result.style.animation = 'none';
             setTimeout(() => {
-                elements.gamePotential.style.transform = 'scale(1)';
-            }, 300);
+                result.style.animation = 'pulse 0.5s';
+            }, 10);
         }
 
-        function updateSyncStatus() {
-            const statuses = [
-                'Connected to game server',
-                'Syncing player data...',
-                'Live game feed active',
-                'Ready for battle',
-                'Beta sync active'
-            ];
-            
-            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-            elements.gameSync.textContent = randomStatus;
-        }
-
-        // ========== ACTIONS ==========
-        function buyGCAB() {
+        function buyGCAβ() {
             window.open(CONFIG.UNISWAP_URL, '_blank');
-            
-            // Show notification
-            showNotification('Opening Uniswap... Buy $GCAB to play!');
+            showNotification('Opening Uniswap to buy $GCAβ...');
         }
 
         function joinGame() {
-            if (CONFIG.GAME_URL && CONFIG.GAME_URL !== 'YOUR_GAME_URL_HERE') {
-                window.open(CONFIG.GAME_URL, '_blank');
-            } else {
-                showNotification('Game URL not configured. Set CONFIG.GAME_URL');
-            }
+            window.open(CONFIG.GAME_URL, '_blank');
+            showNotification('Launching game... Good luck!');
         }
 
         function copyContract() {
-            navigator.clipboard.writeText(CONFIG.CONTRACT).then(() => {
-                showNotification('Contract address copied!');
-            });
+            navigator.clipboard.writeText(CONFIG.CONTRACT);
+            showNotification('Contract address copied!');
         }
 
         function copyTicker() {
-            navigator.clipboard.writeText('$GCAB').then(() => {
-                showNotification('$GCAB copied!');
-            });
+            navigator.clipboard.writeText('$GCAβ');
+            showNotification('$GCAβ ticker copied!');
         }
 
-        // ========== UI HELPERS ==========
-        function showNotification(message, type = 'info') {
-            // Use GCABUtils if available
-            if (window.GCABUtils && GCABUtils.ui && GCABUtils.ui.showToast) {
-                GCABUtils.ui.showToast(message, type);
-                return;
-            }
+        function startDataRefresh() {
+            setInterval(updateHoldings, 30000);
+            setInterval(updateGameFeed, 15000);
             
-            // Fallback notification
+            // Update sync status
+            const statuses = ['Active', 'Syncing', 'Connected', 'Live'];
+            setInterval(() => {
+                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                document.getElementById('sync-status').textContent = randomStatus;
+            }, 5000);
+        }
+
+        function showNotification(message) {
             const notification = document.createElement('div');
             notification.textContent = message;
             notification.style.cssText = `
                 position: fixed;
-                top: 20px;
+                top: 100px;
                 right: 20px;
-                background: ${type === 'error' ? '#ff4444' : 
-                            type === 'success' ? '#00c851' : '#33b5e5'};
+                background: var(--liquidity-red);
                 color: white;
-                padding: 12px 24px;
+                padding: 1rem 1.5rem;
                 border-radius: 8px;
-                z-index: 9999;
-                animation: fadeInOut 3s ease;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
             `;
             
             document.body.appendChild(notification);
             
             setTimeout(() => {
-                notification.style.animation = 'fadeOut 0.5s ease';
+                notification.style.animation = 'slideOut 0.3s ease';
                 setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 500);
-            }, 2500);
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
             
-            // Add CSS animation if not present
+            // Add animation styles
             if (!document.querySelector('#notification-styles')) {
                 const style = document.createElement('style');
                 style.id = 'notification-styles';
                 style.textContent = `
-                    @keyframes fadeInOut {
-                        0% { opacity: 0; transform: translateY(-20px); }
-                        15% { opacity: 1; transform: translateY(0); }
-                        85% { opacity: 1; transform: translateY(0); }
-                        100% { opacity: 0; transform: translateY(-20px); }
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
                     }
-                    @keyframes fadeOut {
-                        to { opacity: 0; transform: translateY(-20px); }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
                     }
                 `;
                 document.head.appendChild(style);
             }
         }
 
-        // ========== WALLET CONNECTION ==========
-        function connectWallet() {
-            if (window.GCABAuth) {
-                GCABAuth.connectWallet().then(wallet => {
-                    showNotification(`Connected: ${GCABUtils.truncateAddress(wallet)}`, 'success');
-                }).catch(error => {
-                    showNotification(`Connection failed: ${error.message}`, 'error');
+        function setupEasterEgg() {
+            let clicks = 0;
+            const badge = document.querySelector('.beta-badge');
+            
+            if (badge) {
+                badge.addEventListener('click', () => {
+                    clicks++;
+                    if (clicks === 7) {
+                        activateBetaMode();
+                        clicks = 0;
+                    }
                 });
-            } else {
-                showNotification('Wallet connection not available', 'error');
             }
         }
 
-        // ========== KEYBOARD SHORTCUTS ==========
-        document.addEventListener('keydown', (e) => {
-            // Ctrl/Cmd + B to buy GCAB
-            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
-                e.preventDefault();
-                buyGCAB();
-            }
+        function activateBetaMode() {
+            document.body.style.animation = 'glitch-1 0.5s infinite';
+            showNotification('🎮 BETA MODE ACTIVATED! Unlimited copium!');
             
-            // Ctrl/Cmd + J to join game
-            if ((e.ctrlKey || e.metaKey) && e.key === 'j') {
-                e.preventDefault();
-                joinGame();
-            }
-            
-            // Ctrl/Cmd + C to copy contract
-            if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
-                e.preventDefault();
-                copyContract();
-            }
-            
-            // F5 to force refresh data
-            if (e.key === 'F5') {
-                e.preventDefault();
-                updateHoldings();
-                updateGameFeed();
-                showNotification('Data refreshed!', 'info');
-            }
-        });
-
-        // ========== EASTER EGGS ==========
-        let clickCount = 0;
-        const betaBadge = document.querySelector('.beta-status');
-        
-        if (betaBadge) {
-            betaBadge.addEventListener('click', () => {
-                clickCount++;
-                
-                if (clickCount >= 7) {
-                    activateBetaEasterEgg();
-                    clickCount = 0;
-                }
-            });
-        }
-
-        function activateBetaEasterEgg() {
-            document.body.style.animation = 'glitch 0.5s infinite';
-            showNotification('🎮 BETA MODE ACTIVATED! Unlimited copium!', 'success');
-            
-            // Change all numbers to "∞"
-            document.querySelectorAll('.holding-amount, .holding-value').forEach(el => {
-                el.textContent = el.textContent.includes('GCAB') ? '∞ GCAB' : '$∞';
+            // Change all numbers to ∞
+            document.querySelectorAll('.gcaβ-amount, .gcaβ-value').forEach(el => {
+                el.textContent = el.textContent.includes('GCAβ') ? '∞ GCAβ' : '$∞';
             });
             
-            // Change button text
-            document.querySelectorAll('.btn-join, .btn-refuel').forEach(btn => {
-                btn.textContent = '🚀 BETA MODE ENGAGED';
-                btn.style.background = 'linear-gradient(45deg, #ff0055, #9d00ff)';
-            });
-            
-            // Reset after 10 seconds
             setTimeout(() => {
                 document.body.style.animation = '';
                 updateHoldings();
-                updateSyncStatus();
             }, 10000);
         }
-    </script>
 
-    <!-- GLITCH ANIMATION -->
-    <style>
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-    </style>
+        // Add glitch animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes glitch-1 {
+                0% { transform: translate(0); }
+                20% { transform: translate(-2px, 2px); }
+                40% { transform: translate(-2px, -2px); }
+                60% { transform: translate(2px, 2px); }
+                80% { transform: translate(2px, -2px); }
+                100% { transform: translate(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
