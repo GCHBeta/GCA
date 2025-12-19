@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCAB Memes 😂</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Memes specific styles */
+        .meme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .meme-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--beta-orange);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .meme-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(255, 170, 0, 0.3);
+            border-color: var(--alpha-blue);
+        }
+        
+        .meme-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: linear-gradient(45deg, var(--bg-darker), #111);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--beta-orange);
+            font-size: 3rem;
+        }
+        
+        .meme-content {
+            padding: 1.5rem;
+        }
+        
+        .meme-title {
+            color: var(--alpha-blue);
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .meme-author {
+            color: var(--delusion-green);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .meme-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .meme-votes {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .vote-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+        
+        .vote-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .upvote:hover {
+            color: var(--delusion-green);
+        }
+        
+        .downvote:hover {
+            color: var(--liquidity-red);
+        }
+        
+        .vote-count {
+            font-weight: bold;
+            color: var(--beta-orange);
+        }
+        
+        .meme-share {
+            color: var(--based-purple);
+            cursor: pointer;
+        }
+        
+        .meme-generator {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--based-purple);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .generator-title {
+            color: var(--based-purple);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .template {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .template:hover {
+            border-color: var(--based-purple);
+            background: rgba(157, 0, 255, 0.1);
+        }
+        
+        .template-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .top-memes {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 1rem 0;
+            margin: 2rem 0;
+        }
+        
+        .top-meme {
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--delusion-green);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .top-badge {
+            background: var(--delusion-green);
+            color: var(--bg-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        @media (max-width: 768px) {
+            .meme-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .template-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Text memes */
+        .text-meme {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 1.8rem;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(45deg, var(--bg-dark), var(--bg-darker));
+            border-radius: 10px;
+            margin: 1rem 0;
+            text-transform: uppercase;
+            color: white;
+            text-shadow: 2px 2px 0 #000;
+        }
+        
+        .meme-1 { color: #00eeff; }
+        .meme-2 { color: #ffaa00; }
+        .meme-3 { color: #ff0055; }
+        .meme-4 { color: #00ffaa; }
+    </style>
+</head>
+<body>
+    <div class="glitch-bg"></div>
+    
+    <header class="beta-header">
+        <div class="logo-container">
+            <h1 class="glitch-text" data-text="GCAB MEMES">GCAB MEMES</h1>
+            <div class="beta-badge">BATTLE ARENA v0.9.9</div>
+        </div>
+        <nav class="beta-nav">
+            <a href="index.html" class="nav-link">🏠 Dashboard</a>
+            <a href="analytics.html" class="nav-link">📊 Analytics</a>
+            <a href="https://gchbeta.github.io/GCA/" class="nav-link" target="_blank">🎮 Play Game</a>
+            <a href="memes.html" class="nav-link active">😂 Memes</a>
+            <a href="lore.html" class="nav-link">📖 Lore</a>
+        </nav>
+    </header>
+
+    <main class="dashboard">
+        <!-- Meme Generator -->
+        <div class="meme-generator">
+            <h3 class="generator-title"><i class="fas fa-magic"></i> CREATE YOUR MEME</h3>
+            
+            <div class="template-grid">
+                <div class="template" onclick="createMeme(1)">
+                    <div class="template-icon">🦍</div>
+                    <div>Diamond Hands</div>
+                </div>
+                <div class="template" onclick="createMeme(2)">
+                    <div class="template-icon">🚀</div>
+                    <div>To The Moon</div>
+                </div>
+                <div class="template" onclick="createMeme(3)">
+                    <div class="template-icon">💎</div>
+                    <div>Based & Redpilled</div>
+                </div>
+                <div class="template" onclick="createMeme(4)">
+                    <div class="template-icon">🔥</div>
+                    <div>FUD Slayer</div>
+                </div>
+                <div class="template" onclick="createMeme(5)">
+                    <div class="template-icon">🧪</div>
+                    <div>Copium Overdose</div>
+                </div>
+                <div class="template" onclick="createMeme(6)">
+                    <div class="template-icon">🏋️</div>
+                    <div>Alpha Chad</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 1.5rem;">
+                <input type="text" 
+                       id="meme-text" 
+                       placeholder="Enter your meme text..."
+                       style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.1); border: 2px solid var(--based-purple); border-radius: 8px; color: white; margin-bottom: 1rem;">
+                <button class="primary-btn" onclick="generateMeme()" style="width: 100%;">
+                    <i class="fas fa-bolt"></i> GENERATE MEME
+                </button>
+            </div>
+            
+            <div id="custom-meme" style="margin-top: 2rem; display: none;">
+                <div class="text-meme meme-1" id="meme-preview">
+                    YOUR MEME WILL APPEAR HERE
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button class="secondary-btn" onclick="shareMeme()">
+                        <i class="fas fa-share"></i> Share
+                    </button>
+                    <button class="secondary-btn" onclick="submitMeme()">
+                        <i class="fas fa-upload"></i> Submit to Battle
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Memes of the Week -->
+        <h3 style="color: var(--delusion-green); margin: 2rem 0 1rem 0;">
+            <i class="fas fa-trophy"></i> TOP MEMES OF THE WEEK
+        </h3>
+        
+        <div class="top-memes">
+            <div class="top-meme">
+                <div class="top-badge">🏆 #1</div>
+                <div class="text-meme meme-1">WHEN GCAB HITS $0.01 AND I'M STILL IN BETA</div>
+                <div style="margin-top: 1rem; color: var(--alpha-blue);">@ChadAlpha</div>
+                <div style="color: var(--delusion-green); font-size: 1.2rem;">❤️ 284</div>
+            </div>
+            
+            <div class="top-meme">
+                <div class="top-badge">🥈 #2</div>
+                <div class="text-meme meme-2">95% DELUSION 4% LIQUIDITY 1% CHANCE I KNOW WHAT I'M DOING</div>
+                <div style="margin-top: 1rem; color: var(--alpha-blue);">@BasedBeta</div>
+                <div style="color: var(--delusion-green); font-size: 1.2rem;">❤️ 217</div>
+            </div>
+            
+            <div class="top-meme">
+                <div class="top-badge">🥉 #3</div>
+                <div class="text-meme meme-3">ALPHA BY AMBITION BETA BY CHOICE</div>
+                <div style="margin-top: 1rem; color: var(--alpha-blue);">@GCAB_OG</div>
+                <div style="color: var(--delusion-green); font-size: 1.2rem;">❤️ 189</div>
+            </div>
+            
+            <div class="top-meme">
+                <div class="text-meme meme-4">MY PORTFOLIO: 99% GCAB 1% COPIUM</div>
+                <div style="margin-top: 1rem; color: var(--alpha-blue);">@DegenKing</div>
+                <div style="color: var(--delusion-green); font-size: 1.2rem;">❤️ 156</div>
+            </div>
+        </div>
+
+        <!-- Meme Battle Arena -->
+        <h3 style="color: var(--beta-orange); margin: 2rem 0 1rem 0;">
+            <i class="fas fa-fist-raised"></i> MEME BATTLE ARENA
+        </h3>
+        <p style="color: #888; margin-bottom: 1.5rem;">Vote for your favorite memes! Winner gets pinned for 24 hours.</p>
+
+        <div class="meme-grid" id="meme-battle">
+            <!-- Memes loaded by JS -->
+        </div>
+        
+        <!-- Meme Contest -->
+        <div class="calculator-section" style="margin-top: 3rem;">
+            <h3 style="color: var(--liquidity-red); margin-bottom: 1.5rem;">
+                <i class="fas fa-gem"></i> WEEKLY MEME CONTEST
+            </h3>
+            <p>Submit your best GCAB meme. Winner receives 10,000 GCAB!</p>
+            <p style="color: var(--alpha-blue); margin: 1rem 0;">
+                <i class="fas fa-clock"></i> Contest ends in: <span id="contest-timer">3d 12h 45m</span>
+            </p>
+            <button class="primary-btn" onclick="enterContest()" style="width: 100%;">
+                <i class="fas fa-gem"></i> ENTER CONTEST (100 GCAB ENTRY)
+            </button>
+        </div>
+    </main>
+
+    <footer class="beta-footer">
+        <div class="footer-content">
+            <p><strong>GCAB MEME BATTLE ARENA v0.9.9</strong> | Where memes make money</p>
+            <p>Top meme each day wins 1,000 GCAB | Weekly contest: 10,000 GCAB prize</p>
+            <p class="easter-egg-hint">The best memes are 95% delusion, 5% effort</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== MEME DATA =====
+        const memes = [
+            {
+                id: 1,
+                title: "When you buy the dip but it keeps dipping",
+                author: "@DiamondHands",
+                votes: 142,
+                color: "meme-1",
+                text: "ME BUYING THE DIP VS THE DIP BUYING ME"
+            },
+            {
+                id: 2,
+                title: "GCAB holder vs ETH maxi",
+                author: "@BasedWarrior",
+                votes: 98,
+                color: "meme-2",
+                text: "SIR, THIS IS A BETA"
+            },
+            {
+                id: 3,
+                title: "Checking charts every 5 minutes",
+                author: "@ChartGoblin",
+                votes: 76,
+                color: "meme-3",
+                text: "REFRESHING DEXSCREENER LIKE"
+            },
+            {
+                id: 4,
+                title: "Trying to explain GCAB to friends",
+                author: "@CopiumDealer",
+                votes: 120,
+                color: "meme-4",
+                text: "IT'S A MEMETIC ANOMALY, OKAY?"
+            },
+            {
+                id: 5,
+                title: "When GCAB pumps 5%",
+                author: "@MoonBoy",
+                votes: 65,
+                color: "meme-1",
+                text: "I'M BASICALLY A WHALE NOW"
+            },
+            {
+                id: 6,
+                title: "The roadmap",
+                author: "@AlphaDev",
+                votes: 89,
+                color: "meme-2",
+                text: "6% ROADMAP 94% VIBES"
+            }
+        ];
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('😂 GCAB Memes Initializing...');
+            
+            loadMemes();
+            startContestTimer();
+            
+            console.log('✅ GCAB Memes Ready');
+        });
+
+        // ===== FUNCTIONS =====
+        function loadMemes() {
+            const container = document.getElementById('meme-battle');
+            container.innerHTML = '';
+            
+            memes.forEach(meme => {
+                const card = document.createElement('div');
+                card.className = 'meme-card';
+                card.innerHTML = `
+                    <div class="meme-image">
+                        <div class="text-meme ${meme.color}" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 1rem;">
+                            ${meme.text}
+                        </div>
+                    </div>
+                    <div class="meme-content">
+                        <div class="meme-title">${meme.title}</div>
+                        <div class="meme-author">By ${meme.author}</div>
+                        <div class="meme-stats">
+                            <div class="meme-votes">
+                                <button class="vote-btn upvote" onclick="vote(${meme.id}, 'up')">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                                <div class="vote-count">${meme.votes}</div>
+                                <button class="vote-btn downvote" onclick="vote(${meme.id}, 'down')">
+                                    <i class="fas fa-arrow-down"></i>
+                                </button>
+                            </div>
+                            <div class="meme-share" onclick="shareMemeById(${meme.id})">
+                                <i class="fas fa-share-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function vote(memeId, direction) {
+            const meme = memes.find(m => m.id === memeId);
+            if (!meme) return;
+            
+            if (direction === 'up') {
+                meme.votes++;
+                showNotification(`Upvoted "${meme.title}"!`, 'success');
+            } else {
+                meme.votes = Math.max(0, meme.votes - 1);
+                showNotification(`Downvoted "${meme.title}"`, 'info');
+            }
+            
+            loadMemes();
+        }
+
+        function createMeme(template) {
+            const texts = [
+                "WHEN GCAB HITS $0.01 AND I'M STILL IN BETA",
+                "95% DELUSION 4% LIQUIDITY 1% CHANCE I KNOW WHAT I'M DOING",
+                "ALPHA BY AMBITION BETA BY CHOICE",
+                "MY PORTFOLIO: 99% GCAB 1% COPIUM",
+                "REFRESHING CHARTS LIKE A DEGEN",
+                "SIR, THIS IS A PERPETUAL BETA"
+            ];
+            
+            document.getElementById('meme-text').value = texts[template - 1] || texts[0];
+            document.getElementById('custom-meme').style.display = 'block';
+            
+            const colors = ['meme-1', 'meme-2', 'meme-3', 'meme-4'];
+            const preview = document.getElementById('meme-preview');
+            preview.className = `text-meme ${colors[template - 1] || colors[0]}`;
+            preview.textContent = texts[template - 1] || texts[0];
+        }
+
+        function generateMeme() {
+            const text = document.getElementById('meme-text').value.trim();
+            if (!text) {
+                showNotification('Enter some meme text first!', 'warning');
+                return;
+            }
+            
+            const preview = document.getElementById('meme-preview');
+            preview.textContent = text;
+            preview.className = `text-meme meme-${Math.floor(Math.random() * 4) + 1}`;
+            
+            document.getElementById('custom-meme').style.display = 'block';
+            showNotification('Meme generated! Ready to share?', 'success');
+        }
+
+        function shareMeme() {
+            const text = document.getElementById('meme-text').value;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + " $GCAB")}&url=https://gchbeta.github.io/GCA/`;
+            window.open(url, '_blank');
+            showNotification('Sharing meme on Twitter...', 'info');
+        }
+
+        function shareMemeById(memeId) {
+            const meme = memes.find(m => m.id === memeId);
+            if (!meme) return;
+            
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(meme.text + " $GCAB")}&url=https://gchbeta.github.io/GCA/`;
+            window.open(url, '_blank');
+            showNotification(`Sharing "${meme.title}" on Twitter!`, 'info');
+        }
+
+        function submitMeme() {
+            const text = document.getElementById('meme-text').value.trim();
+            if (!text) {
+                showNotification('Generate a meme first!', 'warning');
+                return;
+            }
+            
+            const newMeme = {
+                id: memes.length + 1,
+                title: "New Submission",
+                author: "You",
+                votes: 1,
+                color: `meme-${Math.floor(Math.random() * 4) + 1}`,
+                text: text
+            };
+            
+            memes.unshift(newMeme);
+            loadMemes();
+            
+            showNotification('Meme submitted to battle arena!', 'success');
+            document.getElementById('meme-text').value = '';
+            document.getElementById('custom-meme').style.display = 'none';
+        }
+
+        function enterContest() {
+            if (confirm("Enter weekly meme contest? Entry fee: 100 GCAB (simulated)")) {
+                showNotification('Entered contest! Good luck!', 'success');
+                
+                // Simulate entry
+                setTimeout(() => {
+                    if (Math.random() > 0.7) {
+                        showNotification('🎉 CONGRATS! You won the weekly contest! 10,000 GCAB awarded!', 'success');
+                    } else {
+                        showNotification('Better luck next time! The meme battle continues...', 'info');
+                    }
+                }, 2000);
+            }
+        }
+
+        function startContestTimer() {
+            function updateTimer() {
+                const now = new Date();
+                const end = new Date(now);
+                end.setDate(end.getDate() + 3);
+                end.setHours(12, 45, 0);
+                
+                const diff = end - now;
+                
+                if (diff <= 0) {
+                    document.getElementById('contest-timer').textContent = 'CONTEST ENDED';
+                    return;
+                }
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                
+                document.getElementById('contest-timer').textContent = 
+                    `${days}d ${hours}h ${minutes}m`;
+            }
+            
+            updateTimer();
+            setInterval(updateTimer, 60000); // Update every minute
+        }
+
+        function showNotification(message, type = 'info') {
+            const colors = {
+                info: 'var(--alpha-blue)',
+                success: 'var(--delusion-green)',
+                warning: 'var(--beta-orange)',
+                error: 'var(--liquidity-red)'
+            };
+            
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${colors[type]};
+                color: ${type === 'warning' ? 'var(--bg-dark)' : 'white'};
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Add animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

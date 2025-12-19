@@ -314,6 +314,19 @@ app.get("/holders", (req, res) => {
   res.json(rows);
 });
 
+//sidekick routes
+app.get("/sidekick/me", (req, res) => {
+  const owner = String(req.query.owner || "").toLowerCase();
+  if (!owner) return res.status(400).json({ error: "owner required" });
+
+  // pick the newest binding if multiple exist
+  const row = db
+    .prepare("SELECT * FROM sidekicks WHERE owner = ? ORDER BY rowid DESC LIMIT 1")
+    .get(owner);
+
+  return res.json({ owner, sidekick: row || null });
+});
+
 /* --- Candidates: limited by default (prevents infinite panel) --- */
 app.get("/sidekick/candidates", (req, res) => {
   try {
@@ -334,18 +347,20 @@ app.get("/sidekick/candidates", (req, res) => {
     }
 
     const rows = db.prepare(`
-     SELECT h.address, h.balance_num AS balance
-    FROM holders_cache h
-    LEFT JOIN sidekicks s ON s.target = h.address
-    WHERE h.is_contract = 0
-    AND h.balance_num >= ?
-    AND h.balance_num < ?
-    AND h.address != ?
-    AND s.target IS NULL
-    ORDER BY h.balance_num ASC
-    LIMIT ?
-`     ).all(min, ownerBal, owner, limit);
+SELECT h.address, h.balance_num AS balance
+FROM holders_cache h
+WHERE h.is_contract = 0
+  AND h.balance_num >= ?
+  AND h.balance_num < ?
+  AND h.address != ?
+  AND NOT EXISTS (
+    SELECT 1 FROM sidekicks s
+    WHERE s.sidekick = ('candidate:' || lower(h.address))
+  )
+ORDER BY h.balance_num ASC
+LIMIT ?
 
+`     ).all(min, ownerBal, owner, limit);
 
     res.json({ owner, ownerBal, candidates: rows });
   } catch {
@@ -385,6 +400,18 @@ app.post("/sidekick/release", (req, res) => {
 });
 
 app.get("/sidekicks", (req, res) => res.json(listSidekicks.all()));
+
+app.get("/sidekick/of", (req, res) => {
+  const owner = String(req.query.owner || "").toLowerCase();
+  if (!owner) return res.status(400).json({ error: "owner required" });
+
+  const row = db.prepare(
+    "SELECT * FROM sidekicks WHERE owner = ?"
+  ).get(owner);
+
+  res.json({ sidekick: row || null });
+});
+
 
 /* =========================================================
    BUY FLOW (1 TRANSFER)

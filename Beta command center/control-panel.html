@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCAB BETA CONTROL PANEL 🎮</title>
+    
+    <!-- FONTS & ICONS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- STYLES -->
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --alpha: #00eeff;
+            --beta: #ffaa00;
+            --based: #9d00ff;
+            --delusion: #00ffaa;
+            --liquidity: #ff0055;
+            --dark: #0a0a0a;
+            --darker: #050505;
+            --grid: #111;
+            --glow: 0 0 15px;
+            --scanline: rgba(0, 238, 255, 0.03);
+        }
+
+        body {
+            background: var(--dark);
+            color: white;
+            font-family: 'Share Tech Mono', monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        /* ===== GLITCH BACKGROUND ===== */
+        .glitch-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 238, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 85, 0.05) 0%, transparent 50%),
+                repeating-linear-gradient(0deg, transparent, var(--scanline) 1px, transparent 2px),
+                repeating-linear-gradient(90deg, transparent, var(--grid) 1px, transparent 2px);
+            z-index: -2;
+            animation: glitch-bg 20s linear infinite;
+        }
+
+        @keyframes glitch-bg {
+            0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+            100% { background-position: 100px 100px, -100px -100px, 0 100px, 100px 0; }
+        }
+
+        /* ===== SCANLINE EFFECT ===== */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to bottom, transparent, var(--alpha), transparent);
+            z-index: -1;
+            animation: scan 4s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* ===== HEADER ===== */
+        .panel-header {
+            background: rgba(5, 5, 5, 0.95);
+            border-bottom: 3px solid var(--alpha);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 5px 30px rgba(0, 238, 255, 0.1);
+        }
+
+        .branding {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gcab-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--alpha), var(--delusion));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: var(--glow) rgba(0, 238, 255, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .beta-tagline {
+            font-size: 0.9rem;
+            color: var(--beta);
+            letter-spacing: 1px;
+        }
+
+        .panel-badges {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .badge {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid;
+        }
+
+        .game-connected {
+            background: rgba(0, 255, 170, 0.1);
+            border-color: var(--delusion);
+            color: var(--delusion);
+            animation: pulse 2s infinite;
+        }
+
+        .beta-status {
+            background: rgba(255, 0, 85, 0.1);
+            border-color: var(--liquidity);
+            color: var(--liquidity);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ===== NAVIGATION ===== */
+        .panel-nav {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            color: var(--beta);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s;
+            min-width: 85px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 170, 0, 0.1);
+            border-color: var(--beta);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 170, 0, 0.2);
+        }
+
+        .nav-btn.active {
+            background: var(--beta);
+            color: var(--dark);
+            border-color: var(--beta);
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.5);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .nav-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .game-cta {
+            background: linear-gradient(45deg, var(--based), var(--liquidity));
+            color: white;
+            border: none !important;
+            animation: game-pulse 1.5s infinite;
+        }
+
+        @keyframes game-pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(157, 0, 255, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(157, 0, 255, 0.8); }
+        }
+
+        /* ===== MAIN LAYOUT ===== */
+        .panel-grid {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+
+        /* ===== WIDGET STYLES ===== */
+        .widget {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid;
+            border-radius: 15px;
+            padding: 1.8rem;
+            transition: all 0.4s;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .widget::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, transparent, transparent, currentColor, transparent, transparent);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .widget:hover::after {
+            opacity: 0.3;
+        }
+
+        .widget:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .holdings-widget {
+            grid-column: span 4;
+            border-color: var(--alpha);
+        }
+
+        .game-feed-widget {
+            grid-column: span 4;
+            border-color: var(--delusion);
+        }
+
+        .copium-widget {
+            grid-column: span 4;
+            border-color: var(--liquidity);
+        }
+
+        .quickplay-widget {
+            grid-column: span 6;
+            border-color: var(--beta);
+        }
+
+        .contract-widget {
+            grid-column: span 6;
+            border-color: var(--based);
+        }
+
+        .widget h3 {
+            color: inherit;
+            margin-bottom: 1.2rem;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ===== HOLDINGS WIDGET ===== */
+        .holdings-display {
+            text-align: center;
+            margin: 1.8rem 0;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 238, 255, 0.1);
+        }
+
+        .holding-amount {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: var(--alpha);
+            text-shadow: var(--glow) var(--alpha);
+            margin-bottom: 0.5rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .holding-value {
+            font-size: 1.8rem;
+            color: var(--delusion);
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .btn-refuel {
+            background: linear-gradient(45deg, var(--alpha), var(--delusion));
+            color: var(--dark);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 0 auto;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-refuel::after {
+            content: '⛽';
+            position: absolute;
+            right: 15px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateX(10px);
+        }
+
+        .btn-refuel:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .btn-refuel:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 25px rgba(0, 238, 255, 0.4);
+        }
+
+        .game-tip {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(0, 238, 255, 0.08);
+            border-radius: 10px;
+            color: var(--alpha);
+            font-size: 0.9rem;
+            border-left: 4px solid var(--alpha);
+        }
+
+        /* ===== GAME FEED WIDGET ===== */
+        .feed {
+            max-height: 250px;
+            overflow-y: auto;
+            margin: 1.5rem 0;
+            padding-right: 10px;
+        }
+
+        .feed::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .feed::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .feed::-webkit-scrollbar-thumb {
+            background: var(--delusion);
+            border-radius: 10px;
+        }
+
+        .feed-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--delusion);
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .feed-item:hover {
+            background: rgba(0, 255, 170, 0.05);
+            transform: translateX(5px);
+        }
+
+        .player {
+            color: var(--alpha);
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .action {
+            color: white;
+            flex-grow: 1;
+            margin: 0 1rem;
+            text-align: center;
+        }
+
+        .time {
+            color: #888;
+            font-size: 0.8rem;
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .btn-join {
+            background: linear-gradient(45deg, var(--delusion), var(--based));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 1rem auto 0;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-join::after {
+            content: '🚀';
+            position: absolute;
+            right: 15px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateX(10px);
+        }
+
+        .btn-join:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .btn-join:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 25px rgba(0, 255, 170, 0.4);
+        }
+
+        /* ===== COPIUM CALIBRATOR ===== */
+        .copium-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin: 1.8rem 0;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            color: var(--liquidity);
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .copium-inputs input {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid var(--liquidity);
+            border-radius: 10px;
+            color: white;
+            padding: 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .copium-inputs input:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .slider-container input[type="range"] {
+            flex-grow: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            background: rgba(255, 0, 85, 0.2);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            background: var(--liquidity);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid white;
+        }
+
+        .slider-value {
+            min-width: 60px;
+            color: var(--liquidity);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .btn-calculate {
+            background: linear-gradient(45deg, var(--liquidity), var(--based));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1.2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-calculate:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px rgba(255, 0, 85, 0.4);
+        }
+
+        .copium-result {
+            margin-top: 1.8rem;
+            padding: 1.5rem;
+            background: rgba(255, 0, 85, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.3rem;
+            color: var(--liquidity);
+            border: 1px solid rgba(255, 0, 85, 0.2);
+            font-family: 'Orbitron', sans-serif;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== QUICK PLAY ===== */
+        .quicklinks {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .quicklink {
+            background: rgba(255, 170, 0, 0.08);
+            border: 2px solid var(--beta);
+            border-radius: 12px;
+            padding: 1.8rem 1rem;
+            text-decoration: none;
+            color: white;
+            text-align: center;
+            transition: all 0.4s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quicklink::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 170, 0, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .quicklink:hover::before {
+            left: 100%;
+        }
+
+        .quicklink:hover {
+            background: rgba(255, 170, 0, 0.15);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 170, 0, 0.3);
+        }
+
+        .quicklink-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quicklink-title {
+            font-weight: bold;
+            color: var(--beta);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* ===== CONTRACT WIDGET ===== */
+        .contract-display {
+            background: rgba(157, 0, 255, 0.08);
+            border: 2px solid var(--based);
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contract-address {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            word-break: break-all;
+            color: white;
+            margin-bottom: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(157, 0, 255, 0.3);
+        }
+
+        .copy-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-copy {
+            background: var(--based);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.9rem 1.8rem;
+            font-family: 'Share Tech Mono', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-copy:hover {
+            background: #ad00ff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(157, 0, 255, 0.4);
+        }
+
+        .contract-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.8rem;
+        }
+
+        .contract-link {
+            color: var(--alpha);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--alpha);
+            border-radius: 6px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .contract-link:hover {
+            background: var(--alpha);
+            color: var(--dark);
+            transform: translateY(-2px);
+        }
+
+        /* ===== FOOTER ===== */
+        .panel-footer {
+            background: rgba(5, 5, 5, 0.95);
+            border-top: 3px solid var(--based);
+            padding: 2.5rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .footer-content p {
+            margin-bottom: 1.2rem;
+            line-height: 1.7;
+            color: #aaa;
+        }
+
+        .sync-status {
+            color: var(--delusion);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+
+        .sync-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--delusion);
+            animation: sync-pulse 1.5s infinite;
+        }
+
+        @keyframes sync-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ===== CONNECT WALLET ===== */
+        .wallet-connect {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+
+        .btn-connect {
+            background: linear-gradient(45deg, var(--alpha), var(--based));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-connect:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 30px rgba(0, 238, 255, 0.4);
+        }
+
+        /* ===== NOTIFICATIONS ===== */
+        .notification {
+            position: fixed;
+            top: 6rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.9);
+            border-left: 4px solid;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            z-index: 1000;
+            max-width: 350px;
+            transform: translateX(400px);
+            transition: transform 0.4s;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { border-color: var(--delusion); }
+        .notification.error { border-color: var(--liquidity); }
+        .notification.info { border-color: var(--alpha); }
+        .notification.warning { border-color: var(--beta); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .panel-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .holdings-widget,
+            .game-feed-widget,
+            .copium-widget {
+                grid-column: span 3;
+            }
+            
+            .quickplay-widget,
+            .contract-widget {
+                grid-column: span 6;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .panel-header {
+                flex-direction: column;
+                gap: 1.2rem;
+                text-align: center;
+                padding: 1.2rem;
+            }
+            
+            .branding {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            
+            .panel-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .panel-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1.2rem;
+                gap: 1.2rem;
+            }
+            
+            .widget {
+                grid-column: span 1 !important;
+            }
+            
+            .quicklinks {
+                grid-template-columns: 1fr;
+            }
+            
+            .copy-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-copy {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+            
+            .wallet-connect {
+                bottom: 1rem;
+                right: 1rem;
+            }
+            
+            .btn-connect {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .gcab-logo {
+                font-size: 1.8rem;
+            }
+            
+            .panel-badges {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .badge {
+                justify-content: center;
+            }
+            
+            .contract-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contract-link {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- BACKGROUND EFFECTS -->
+    <div class="glitch-bg"></div>
+    <div class="scanline"></div>
+    
+    <!-- HEADER -->
+    <header class="panel-header">
+        <div class="branding">
+            <div class="logo">
+                <div class="gcab-logo">GCAB BETA CONTROL</div>
+                <div class="beta-tagline">ALPHA FLEX • BETA VIBES • FOREVER</div>
+            </div>
+            <div class="panel-badges">
+                <div class="badge game-connected">
+                    <i class="fas fa-gamepad"></i>
+                    GAME READY
+                </div>
+                <div class="badge beta-status">
+                    <i class="fas fa-code-branch"></i>
+                    v0.9.9 BETA
+                </div>
+            </div>
+        </div>
+        
+        <nav class="panel-nav">
+            <a href="control-panel.html" class="nav-btn active">
+                <div class="nav-icon"><i class="fas fa-tachometer-alt"></i></div>
+                <div class="nav-label">Dashboard</div>
+            </a>
+            <a href="analytics.html" class="nav-btn">
+                <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="nav-label">Analytics</div>
+            </a>
+            <a href="https://gchbeta.github.io/GCA/" class="nav-btn game-cta" target="_blank">
+                <div class="nav-icon"><i class="fas fa-play"></i></div>
+                <div class="nav-label">Play Game</div>
+            </a>
+            <a href="memes.html" class="nav-btn">
+                <div class="nav-icon"><i class="fas fa-laugh-squint"></i></div>
+                <div class="nav-label">Memes</div>
+            </a>
+            <a href="lore.html" class="nav-btn">
+                <div class="nav-icon"><i class="fas fa-scroll"></i></div>
+                <div class="nav-label">Intel</div>
+            </a>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="panel-grid">
+        <!-- YOUR GCAB ARSENAL -->
+        <section class="widget holdings-widget">
+            <h3><i class="fas fa-crosshairs"></i> YOUR GCAB ARSENAL</h3>
+            <div class="holdings-display">
+                <div class="holding-amount" id="gcab-balance">-- GCAB</div>
+                <div class="holding-value" id="gcab-value">$--</div>
+                <button class="btn-refuel" onclick="buyGCAB()">
+                    <i class="fas fa-gas-pump"></i> REFUEL FOR GAME
+                </button>
+            </div>
+            <div class="game-tip">
+                <i class="fas fa-lightbulb"></i> Tip: Hold more GCAB for better game perks!
+            </div>
+        </section>
+
+        <!-- LIVE GAME ACTIVITY -->
+        <section class="widget game-feed-widget">
+            <h3><i class="fas fa-gamepad"></i> LIVE GAME ACTIVITY</h3>
+            <div class="feed" id="game-feed">
+                <!-- Feed items will be added by JavaScript -->
+            </div>
+            <button class="btn-join" onclick="joinGame()">
+                <i class="fas fa-rocket"></i> JOIN BATTLE
+            </button>
+        </section>
+
+        <!-- COPIUM CALIBRATOR -->
+        <section class="widget copium-widget">
+            <h3><i class="fas fa-flask"></i> COPIUM CALIBRATOR</h3>
+            <div class="copium-inputs">
+                <div class="input-group">
+                    <label for="risk-amount">GCAB TO RISK</label>
+                    <input type="number" 
+                           id="risk-amount" 
+                           placeholder="e.g., 1000"
+                           value="1000"
+                           min="100"
+                           max="1000000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="delusion-slider">DELUSION LEVEL</label>
+                    <div class="slider-container">
+                        <input type="range" 
+                               id="delusion-slider" 
+                               min="1" 
+                               max="100" 
+                               value="95">
+                        <span class="slider-value" id="delusion-value">95%</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-calculate" onclick="calculateCopium()">
+                <i class="fas fa-calculator"></i> CALCULATE WIN POTENTIAL
+            </button>
+            <div class="copium-result" id="game-potential">
+                <div>Click calculate to see potential returns...</div>
+            </div>
+        </section>
+
+        <!-- QUICK PLAY LINKS -->
+        <section class="widget quickplay-widget">
+            <h3><i class="fas fa-bolt"></i> QUICK PLAY LINKS</h3>
+            <div class="quicklinks">
+                <a href="https://gchbeta.github.io/GCA/" class="quicklink" target="_blank">
+                    <div class="quicklink-icon">🎯</div>
+                    <div class="quicklink-title">5-min Game</div>
+                </a>
+                <a href="https://gchbeta.github.io/GCA/" class="quicklink" target="_blank">
+                    <div class="quicklink-icon">🏆</div>
+                    <div class="quicklink-title">Daily Challenge</div>
+                </a>
+                <a href="https://gchbeta.github.io/GCA/" class="quicklink" target="_blank">
+                    <div class="quicklink-icon">👑</div>
+                    <div class="quicklink-title">Tournament</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- CONTRACT & LINKS -->
+        <section class="widget contract-widget">
+            <h3><i class="fas fa-file-contract"></i> CONTRACT & LINKS</h3>
+            <div class="contract-display">
+                <div class="contract-address" id="contract-display">
+                    0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07
+                </div>
+                <div class="copy-buttons">
+                    <button class="btn-copy" onclick="copyContract()">
+                        <i class="far fa-copy"></i> Copy Contract
+                    </button>
+                    <button class="btn-copy" onclick="copyTicker()">
+                        <i class="fas fa-hashtag"></i> Copy $GCAB
+                    </button>
+                </div>
+            </div>
+            <div class="contract-links">
+                <a href="https://basescan.org/token/0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
+                   class="contract-link" target="_blank">
+                    <i class="fas fa-search"></i> Basescan
+                </a>
+                <a href="https://app.uniswap.org/swap?chain=base&outputCurrency=0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
+                   class="contract-link" target="_blank">
+                    <i class="fas fa-exchange-alt"></i> Uniswap
+                </a>
+                <a href="https://dexscreener.com/base/0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07" 
+                   class="contract-link" target="_blank">
+                    <i class="fas fa-chart-bar"></i> DexScreener
+                </a>
+                <a href="https://v2.bubblemaps.io/map?address=0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07&chain=base" 
+                   class="contract-link" target="_blank">
+                    <i class="fas fa-bubbles"></i> Bubble Map
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- WALLET CONNECT -->
+    <div class="wallet-connect">
+        <button class="btn-connect" onclick="connectWallet()">
+            <i class="fas fa-wallet"></i> Connect Wallet
+        </button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="panel-footer">
+        <div class="footer-content">
+            <p>
+                <strong>GCAB BETA CONTROL PANEL v0.9.9</strong> | 
+                Companion tool for the GCAB Hodler Social Game | 
+                Alpha flex, Beta vibes, Forever.
+            </p>
+            <div class="sync-status">
+                <div class="sync-indicator"></div>
+                <span id="game-sync">Initializing panel sync...</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // ========== CONFIGURATION ==========
+        const CONFIG = {
+            CONTRACT: '0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07',
+            GAME_URL: 'https://gchbeta.github.io/GCA/',
+            UNISWAP_URL: 'https://app.uniswap.org/swap?chain=base&outputCurrency=0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07',
+            CURRENT_PRICE: 0.00001, // Mock price - replace with API
+            DELUSION_MULTIPLIER: 10
+        };
+
+        // ========== STATE ==========
+        let gameConnected = false;
+        let walletConnected = false;
+        let panelData = {
+            gcabBalance: 0,
+            gcabValue: 0,
+            gameScore: 0,
+            delusionLevel: 95
+        };
+
+        // ========== DOM ELEMENTS ==========
+        const elements = {
+            gcabBalance: document.getElementById('gcab-balance'),
+            gcabValue: document.getElementById('gcab-value'),
+            gameFeed: document.getElementById('game-feed'),
+            gamePotential: document.getElementById('game-potential'),
+            gameSync: document.getElementById('game-sync'),
+            contractDisplay: document.getElementById('contract-display'),
+            riskAmount: document.getElementById('risk-amount'),
+            delusionSlider: document.getElementById('delusion-slider'),
+            delusionValue: document.getElementById('delusion-value')
+        };
+
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 GCAB Control Panel Initializing...');
+            
+            // Set up slider
+            if (elements.delusionSlider) {
+                elements.delusionSlider.addEventListener('input', function() {
+                    elements.delusionValue.textContent = `${this.value}%`;
+                    panelData.delusionLevel = parseInt(this.value);
+                });
+            }
+            
+            // Load initial data
+            updateHoldings();
+            generateGameFeed();
+            updateSyncStatus();
+            
+            // Start periodic updates
+            setInterval(updateHoldings, 30000);
+            setInterval(generateGameFeed, 15000);
+            setInterval(updateSyncStatus, 5000);
+            
+            // Show welcome notification
+            setTimeout(() => {
+                showNotification('Welcome to GCAB Beta Control Panel!', 'info');
+            }, 1000);
+            
+            console.log('✅ GCAB Control Panel Ready');
+        });
+
+        // ========== CORE FUNCTIONS ==========
+        function updateHoldings() {
+            // Generate mock data for now
+            const mockBalance = 1000000 + Math.floor(Math.random() * 500000);
+            const mockValue = mockBalance * CONFIG.CURRENT_PRICE;
+            
+            panelData.gcabBalance = mockBalance;
+            panelData.gcabValue = mockValue;
+            
+            elements.gcabBalance.textContent = `${mockBalance.toLocaleString()} GCAB`;
+            elements.gcabValue.textContent = `$${mockValue.toFixed(2)}`;
+            
+            // Update game tip based on holdings
+            updateGameTip(mockBalance);
+        }
+
+        function updateGameTip(balance) {
+            const tips = [
+                `Hold ${(1000000 - balance).toLocaleString()} more GCAB for Alpha status!`,
+                `With ${balance.toLocaleString()} GCAB, you're in the top 10%!`,
+                `Every 100k GCAB gives +5% game bonus!`,
+                `Diamond hands pay off! Keep holding.`
+            ];
+            
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            document.querySelector('.game-tip').innerHTML = 
+                `<i class="fas fa-lightbulb"></i> ${randomTip}`;
+        }
+
+        function generateGameFeed() {
+            const activities = [
+                {
+                    player: `Chad_${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+                    action: 'scored ' + (500 + Math.floor(Math.random() * 2000)) + ' points!',
+                    time: getRandomTime()
+                },
+                {
+                    player: `Alpha_${Math.floor(Math.random() * 1000)}`,
+                    action: 'won the daily challenge! 🏆',
+                    time: getRandomTime()
+                },
+                {
+                    player: `Based_${Math.random().toString(36).substr(2, 4)}`,
+                    action: 'bought ' + (1000 + Math.floor(Math.random() * 10000)).toLocaleString() + ' GCAB',
+                    time: getRandomTime()
+                },
+                {
+                    player: `Beta_${Math.floor(Math.random() * 999)}`,
+                    action: 'reached level ' + (5 + Math.floor(Math.random() * 20)),
+                    time: getRandomTime()
+                },
+                {
+                    player: `GCAB_OG`,
+                    action: 'created an epic meme! 😂',
+                    time: getRandomTime()
+                }
+            ];
+            
+            // Clear and update feed
+            elements.gameFeed.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const feedItem = document.createElement('div');
+                feedItem.className = 'feed-item';
+                feedItem.innerHTML = `
+                    <div class="player">${activity.player}</div>
+                    <div class="action">${activity.action}</div>
+                    <div class="time">${activity.time}</div>
+                `;
+                elements.gameFeed.appendChild(feedItem);
+            });
+            
+            // Add one more for "you" if connected
+            if (walletConnected) {
+                const yourItem = document.createElement('div');
+                yourItem.className = 'feed-item';
+                yourItem.style.background = 'rgba(0, 238, 255, 0.1)';
+                yourItem.innerHTML = `
+                    <div class="player" style="color: var(--alpha)">YOU</div>
+                    <div class="action">Ready to play! Click JOIN BATTLE</div>
+                    <div class="time">Now</div>
+                `;
+                elements.gameFeed.insertBefore(yourItem, elements.gameFeed.firstChild);
+            }
+        }
+
+        function getRandomTime() {
+            const times = [
+                'Just now',
+                '1 min ago',
+                '2 min ago',
+                '5 min ago',
+                '10 min ago',
+                '15 min ago'
+            ];
+            return times[Math.floor(Math.random() * times.length)];
+        }
+
+        function calculateCopium() {
+            const riskAmount = parseInt(elements.riskAmount.value) || 1000;
+            const delusion = panelData.delusionLevel || 95;
+            
+            if (riskAmount < 100) {
+                showNotification('Minimum risk: 100 GCAB', 'warning');
+                elements.riskAmount.value = 100;
+                return;
+            }
+            
+            if (riskAmount > 1000000) {
+                showNotification('Maximum risk: 1,000,000 GCAB', 'warning');
+                elements.riskAmount.value = 1000000;
+                return;
+            }
+            
+            // Calculate "copium" results
+            const baseValue = riskAmount * CONFIG.CURRENT_PRICE;
+            const delusionMultiplier = (delusion / 100) * CONFIG.DELUSION_MULTIPLIER;
+            const moonValue = baseValue * delusionMultiplier;
+            const realityValue = baseValue * 0.04; // 4% liquidity
+            
+            // Generate results
+            const results = [
+                `🌙 Moon: $${moonValue.toFixed(2)}`,
+                `📉 Reality: $${realityValue.toFixed(2)}`,
+                `🎯 Risk/Reward: 1:${(moonValue/realityValue).toFixed(1)}`,
+                `💊 Copium: ${Math.round(moonValue/100)}mg needed`,
+                `📊 Delusion ROI: ${(delusionMultiplier * 100).toFixed(0)}%`,
+                `🚀 Based on ${delusion}% pure hopium`
+            ];
+            
+            const randomResult = results[Math.floor(Math.random() * results.length)];
+            elements.gamePotential.innerHTML = `<div>${randomResult}</div>`;
+            
+            // Animation
+            elements.gamePotential.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                elements.gamePotential.style.transform = 'scale(1)';
+            }, 300);
+            
+            showNotification('Copium calculations complete!', 'success');
+        }
+
+        function updateSyncStatus() {
+            const statuses = [
+                'Connected to game server',
+                'Syncing player data...',
+                'Live game feed active',
+                'Ready for battle',
+                'Beta sync active',
+                'All systems operational',
+                'GCAB price feed stable',
+                'Based energy detected'
+            ];
+            
+            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+            elements.gameSync.textContent = randomStatus;
+        }
+
+        // ========== ACTIONS ==========
+        function buyGCAB() {
+            window.open(CONFIG.UNISWAP_URL, '_blank');
+            showNotification('Opening Uniswap to buy $GCAB...', 'info');
+            
+            // Simulate purchase after delay
+            setTimeout(() => {
+                const purchaseAmount = 1000 + Math.floor(Math.random() * 10000);
+                showNotification(`Simulated purchase: ${purchaseAmount.toLocaleString()} GCAB`, 'success');
+                
+                // Add to holdings
+                panelData.gcabBalance += purchaseAmount;
+                updateHoldings();
+            }, 2000);
+        }
+
+        function joinGame() {
+            window.open(CONFIG.GAME_URL, '_blank');
+            showNotification('Launching game... Good luck!', 'success');
+            
+            // Add to game feed
+            const gameActivity = document.createElement('div');
+            gameActivity.className = 'feed-item';
+            gameActivity.style.background = 'rgba(0, 255, 170, 0.1)';
+            gameActivity.innerHTML = `
+                <div class="player" style="color: var(--delusion)">YOU</div>
+                <div class="action">joined the game! 🎮</div>
+                <div class="time">Now</div>
+            `;
+            elements.gameFeed.insertBefore(gameActivity, elements.gameFeed.firstChild);
+        }
+
+        function connectWallet() {
+            // Simulate wallet connection
+            walletConnected = true;
+            
+            document.querySelector('.btn-connect').innerHTML = 
+                '<i class="fas fa-check"></i> Wallet Connected';
+            document.querySelector('.btn-connect').style.background = 
+                'linear-gradient(45deg, var(--delusion), var(--based))';
+            
+            // Update badge
+            document.querySelector('.game-connected').innerHTML = 
+                '<i class="fas fa-check-circle"></i> WALLET CONNECTED';
+            
+            // Update holdings with "real" data
+            panelData.gcabBalance = 1500000;
+            panelData.gcabValue = panelData.gcabBalance * CONFIG.CURRENT_PRICE;
+            updateHoldings();
+            
+            showNotification('Wallet connected successfully!', 'success');
+            
+            // Update game feed
+            generateGameFeed();
+        }
+
+        function copyContract() {
+            navigator.clipboard.writeText(CONFIG.CONTRACT).then(() => {
+                showNotification('Contract address copied to clipboard!', 'success');
+            }).catch(err => {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = CONFIG.CONTRACT;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('Contract address copied!', 'success');
+            });
+        }
+
+        function copyTicker() {
+            navigator.clipboard.writeText('$GCAB').then(() => {
+                showNotification('$GCAB ticker copied!', 'info');
+            });
+        }
+
+        // ========== UI HELPERS ==========
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            document.querySelectorAll('.notification').forEach(n => n.remove());
+            
+            // Create notification
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-${getNotificationIcon(type)}"></i>
+                    <div>${message}</div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Show
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 400);
+            }, 5000);
+        }
+
+        function getNotificationIcon(type) {
+            switch(type) {
+                case 'success': return 'check-circle';
+                case 'error': return 'exclamation-circle';
+                case 'warning': return 'exclamation-triangle';
+                default: return 'info-circle';
+            }
+        }
+
+        // ========== EASTER EGGS ==========
+        let betaClickCount = 0;
+        document.querySelector('.beta-status').addEventListener('click', () => {
+            betaClickCount++;
+            
+            if (betaClickCount >= 3 && betaClickCount < 7) {
+                showNotification(`Beta clicks: ${betaClickCount}/7`, 'info');
+            }
+            
+            if (betaClickCount === 7) {
+                activateBetaMode();
+            }
+        });
+
+        function activateBetaMode() {
+            // Visual effects
+            document.body.style.animation = 'none';
+            document.body.style.animation = 'glitch 0.5s infinite';
+            
+            // Change all numbers to "∞"
+            document.querySelectorAll('.holding-amount, .holding-value').forEach(el => {
+                el.textContent = el.textContent.includes('GCAB') ? '∞ GCAB' : '$∞';
+            });
+            
+            // Change buttons
+            document.querySelectorAll('.btn-join, .btn-refuel, .btn-calculate').forEach(btn => {
+                const originalText = btn.textContent;
+                btn.innerHTML = '<i class="fas fa-infinity"></i> BETA MODE';
+                btn.setAttribute('data-original', originalText);
+                btn.style.background = 'linear-gradient(45deg, #ff0055, #9d00ff, #00eeff)';
+                btn.style.backgroundSize = '300% 300%';
+                btn.style.animation = 'gradient 2s ease infinite';
+            });
+            
+            // Add gradient animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes gradient {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+                @keyframes glitch {
+                    0% { transform: translate(0); filter: hue-rotate(0deg); }
+                    20% { transform: translate(-2px, 2px); filter: hue-rotate(90deg); }
+                    40% { transform: translate(-2px, -2px); filter: hue-rotate(180deg); }
+                    60% { transform: translate(2px, 2px); filter: hue-rotate(270deg); }
+                    80% { transform: translate(2px, -2px); filter: hue-rotate(360deg); }
+                    100% { transform: translate(0); filter: hue-rotate(0deg); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            showNotification('🎮 BETA MODE ACTIVATED! Unlimited copium!', 'success');
+            
+            // Reset after 30 seconds
+            setTimeout(() => {
+                betaClickCount = 0;
+                document.body.style.animation = '';
+                updateHoldings();
+                
+                document.querySelectorAll('[data-original]').forEach(btn => {
+                    btn.innerHTML = btn.getAttribute('data-original');
+                    btn.style.background = '';
+                    btn.style.animation = '';
+                    btn.removeAttribute('data-original');
+                });
+                
+                showNotification('Beta mode deactivated. Back to reality!', 'info');
+            }, 30000);
+        }
+
+        // ========== KEYBOARD SHORTCUTS ==========
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + B to buy GCAB
+            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+                e.preventDefault();
+                buyGCAB();
+            }
+            
+            // Ctrl/Cmd + J to join game
+            if ((e.ctrlKey || e.metaKey) && e.key === 'j') {
+                e.preventDefault();
+                joinGame();
+            }
+            
+            // Ctrl/Cmd + C to copy contract
+            if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+                e.preventDefault();
+                copyContract();
+            }
+            
+            // F5 to force refresh
+            if (e.key === 'F5') {
+                e.preventDefault();
+                updateHoldings();
+                generateGameFeed();
+                showNotification('Panel data refreshed!', 'info');
+            }
+            
+            // Escape to clear notifications
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.notification').forEach(n => n.remove());
+            }
+        });
+
+        console.log('🚀 GCAB Beta Control Panel v0.9.9 Loaded');
+        console.log('📝 Contract: ' + CONFIG.CONTRACT);
+        console.log('🎮 Game: ' + CONFIG.GAME_URL);
+        console.log('💪 Alpha flex, Beta vibes, Forever.');
+    </script>
+</body>
+</html>

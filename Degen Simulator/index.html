@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Degen Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="terminal">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="stat">
+                <span class="stat-label">🏦 Portfolio:</span>
+                <span id="portfolioValue" class="stat-value">$100,000</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">🔥 Survival Score:</span>
+                <span id="survivalScore" class="stat-value">100</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">⛽ Live Gas:</span>
+                <span id="liveGas" class="stat-value">Loading...</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">🎯 Scenario:</span>
+                <span id="scenarioCount" class="stat-value">#1</span>
+            </div>
+        </div>
+
+        <!-- Main Game Container -->
+        <div class="game-container">
+            <!-- Left Panel: Scenario -->
+            <div class="scenario-panel">
+                <div class="panel-header">
+                    <h2 id="scenarioType">DEGEN SIMULATION v2.1</h2>
+                    <div class="scenario-meta">
+                        <span id="scenarioDifficulty" class="difficulty-easy">EASY</span>
+                        <span id="scenarioTime" class="time-indicator">⌛ Real-time</span>
+                    </div>
+                </div>
+                
+                <div class="scenario-content">
+                    <!-- Dynamic Scenario Image -->
+                    <div class="scenario-visual">
+                        <img id="scenarioImage" src="" alt="Scenario visual" class="meme-image">
+                        <div class="image-overlay" id="imageOverlay"></div>
+                    </div>
+                    
+                    <!-- Scenario Text -->
+                    <div class="scenario-text">
+                        <h3 id="scenarioTitle">INITIALIZING DEGEN PROTOCOL...</h3>
+                        <p id="scenarioDescription" class="description">
+                            Loading your personalized crypto nightmare...
+                        </p>
+                        
+                        <!-- Consequences Tracker -->
+                        <div class="consequences-tracker">
+                            <div class="consequence-tag" id="consequence1">Trust Issues: None</div>
+                            <div class="consequence-tag" id="consequence2">Gas PTSD: None</div>
+                            <div class="consequence-tag" id="consequence3">Rug Memory: None</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Choices & Outcomes -->
+            <div class="choices-panel">
+                <div class="panel-header">
+                    <h2>YOUR MOVE, DEGEN</h2>
+                    <div class="decision-history">
+                        <span id="correctChoices">✓ 0</span>
+                        <span id="badChoices">✗ 0</span>
+                    </div>
+                </div>
+                
+                <!-- Dynamic Options Container -->
+                <div class="options-container" id="optionsContainer">
+                    <!-- Options loaded dynamically -->
+                </div>
+                
+                <!-- Outcome Display -->
+                <div class="outcome-container" id="outcomeContainer">
+                    <div class="outcome-header">
+                        <span id="outcomeIcon">⚡</span>
+                        <h3 id="outcomeTitle">CHOOSE YOUR FATE</h3>
+                    </div>
+                    <p id="outcomeText" class="outcome-text">
+                        Each decision permanently alters your simulation...
+                    </p>
+                    <div class="outcome-stats">
+                        <div class="stat-change">
+                            <span class="stat-label">Portfolio Change:</span>
+                            <span id="portfolioChange" class="change-neutral">$0</span>
+                        </div>
+                        <div class="stat-change">
+                            <span class="stat-label">Risk Level:</span>
+                            <span id="riskLevel" class="risk-low">Low</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="action-btn" id="panicSellBtn" disabled>
+                        🚨 PANIC SELL (-20%)
+                    </button>
+                    <button class="action-btn" id="apeInBtn" disabled>
+                        🦍 APE IN (+100%/-100%)
+                    </button>
+<!-- NEW LINE (onclick removed) -->
+<button class="action-btn" id="nextScenarioBtn">
+    ⏩ NEXT NIGHTMARE
+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar: Narrative Log -->
+        <div class="narrative-log">
+            <div class="log-header">
+                <h3>📜 NARRATIVE LOG</h3>
+                <button class="clear-log" onclick="clearLog()">Clear</button>
+            </div>
+            <div class="log-entries" id="logEntries">
+                <div class="log-entry">
+                    <span class="log-time">[00:00]</span>
+                    <span class="log-text">Welcome to the Infinite Degen Simulator. Your poor financial decisions await...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="soundClick" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" preload="auto"></audio>
+    <audio id="soundSuccess" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" preload="auto"></audio>
+    <audio id="soundFail" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="engine.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

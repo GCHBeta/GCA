@@ -12,6 +12,12 @@ const BACKEND = {
   buy: true
 };
 
+//temp backend guard
+function hasBackend() {
+  return typeof API_BASE === "string" && API_BASE.startsWith("https");
+}
+
+
 (() => {
   // ========= CONFIG =========
   const BASE_CHAIN_ID_HEX = "0x2105"; // 8453
@@ -111,6 +117,32 @@ const BACKEND = {
     if (releaseBtn) releaseBtn.disabled = isBusy || !userAddress;
     if (msg) setStatus(msg);
   }
+
+async function loadMySidekick() {
+  if (!userAddress || !hasBackend()) return;
+
+  try {
+    const r = await safefetch(`${API_BASE}/sidekick/me?owner=${userAddress}`);
+    if (!r.ok) throw new Error("sidekick fetch failed");
+
+    const data = await r.json();
+    const row = data.sidekick;
+
+    if (!sidekickText) return;
+
+    const raw = row?.sidekick || "";              // <-- DB column is "sidekick"
+    const addr = raw.startsWith("candidate:") ? raw.slice(10) : raw;
+
+    sidekickText.textContent = addr
+      ? `${addr.slice(0, 6)}…${addr.slice(-4)}`
+      : "—";
+  } catch (e) {
+    console.warn(e);
+    if (sidekickText) sidekickText.textContent = "—";
+  }
+}
+
+
 
   // ========= GAME LOGIC (Power/Rank) =========
   const TIERS = [
@@ -422,25 +454,28 @@ async function tryAutoConnect() {
   }
 
   // ========= BUY + CLAIM (REAL) =========
-  async function buyQuote(target) {
-    const r = await fetch(
-      `${API_BASE}/buy/quote?buyer=${userAddress}&target=${target}`
-    );
-    const data = await r.json();
-    if (!r.ok) throw new Error(data?.error || "Quote failed");
-    return data; // { price, payTo, split }
-  }
+async function buyIntent(target) {
+  const r = await fetch(`${API_BASE}/buy/intent`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ buyer: userAddress, target })
+  });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data?.error || "Intent failed");
+  return data; // expect { price, payTo, ... }
+}
 
-  async function buyCommit(target, txHash) {
-    const r = await fetch(`${API_BASE}/buy/commit`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ buyer: userAddress, target, txHash })
-    });
-    const data = await r.json();
-    if (!r.ok) throw new Error(data?.error || "Commit failed");
-    return data;
-  }
+async function buyConfirm(target, txHash) {
+  const r = await fetch(`${API_BASE}/buy/confirm`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ buyer: userAddress, target, txHash })
+  });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data?.error || "Confirm failed");
+  return data;
+}
+
 
   async function buyAndClaimTarget(target, btnEl) {
     if (isBusy) return;
@@ -451,15 +486,25 @@ async function tryAutoConnect() {
 
     try {
       // 1) Quote from backend
-      const q = await buyQuote(target);
+      const q = await buyIntent(target);
 
-      // 2) Transfer GCAb -> Treasury (1 tx)
-      setStatus(`Offer: ${fmt(q.price)} GCAb → Treasury. Sign the transfer.`);
+// Guard / normalize backend response
+const price = q.price ?? q.amount ?? q.cost;
+const payTo = q.payTo ?? q.treasury ?? q.to;
 
-      const tokenWithSigner = new ethers.Contract(GCAB_TOKEN_ADDRESS, ERC20_ABI, signer);
-      const amountRaw = ethers.parseUnits(String(q.price), gcab.decimals || 18);
+if (!price || !payTo) {
+  console.error("Bad intent payload:", q);
+  throw new Error("Backend intent missing price or payTo");
+}
 
-      const tx = await tokenWithSigner.transfer(q.payTo, amountRaw);
+// Transfer
+setStatus(`Offer: ${fmt(price)} GCAb → Treasury. Sign the transfer.`);
+
+const tokenWithSigner = new ethers.Contract(GCAB_TOKEN_ADDRESS, ERC20_ABI, signer);
+const amountRaw = ethers.parseUnits(String(price), gcab.decimals || 18);
+
+const tx = await tokenWithSigner.transfer(payTo, amountRaw);
+      // 2) Wait for blockchain confirmation
       setStatus(`The Forge accepts… waiting confirmation (${tx.hash.slice(0, 10)}…)`);
 
       const receipt = await tx.wait();
@@ -467,11 +512,15 @@ async function tryAutoConnect() {
 
       // 3) Commit on backend (records split + claims)
       setStatus("Binding complete… writing into the ledger.");
-      const committed = await buyCommit(target, tx.hash);
+      const committed = await buyConfirm(target, tx.hash);
+      await loadMySidekick();
+
 
       // 4) Refresh UI
       await refreshAura();
       await loadAndRenderCandidates();
+      await loadMySidekick();
+
 
       setStatus(`Claim sealed. 20% burn confirmed. Sidekick bound.`);
     } catch (e) {
@@ -482,6 +531,36 @@ async function tryAutoConnect() {
       busy(false);
     }
   }
+    //loadsidekick
+    async function loadMySidekick() {
+  if (!userAddress) return;
+
+  try {
+    const r = await safefetch(`${API_BASE}/sidekick/me?owner=${userAddress}`);
+    const data = await r.json();
+
+    if (!r.ok) throw new Error(data?.error || "Failed to load sidekick");
+
+    if (!sidekickText) return;
+
+    const sk = data.sidekick;
+    if (!sk) {
+      sidekickText.textContent = "—";
+      return;
+    }
+
+    // adapt to your schema: owner/target vs ownerAddr/targetAddr etc.
+    const target = sk.target || sk.target_address || sk.sidekick || sk.address;
+    sidekickText.textContent = target
+      ? `${target.slice(0, 6)}…${target.slice(-4)}`
+      : "(unknown)";
+  } catch (e) {
+    console.warn(e);
+    if (sidekickText) sidekickText.textContent = "—";
+  }
+}
+
+
 
   // ========= SANDBOX STREAK (local only) =========
   function streakKey() {
@@ -541,6 +620,7 @@ async function connect() {
     }
 
     await refreshAura();
+
 
     if (connectBtn) connectBtn.textContent = "Connected";
     if (addTokenBtn) addTokenBtn.disabled = false;

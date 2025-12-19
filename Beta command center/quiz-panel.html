@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeFi Degenerate Survival Quiz</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Courier New', monospace; }
+        body {
+            background: #0a0a0a; color: #00ff41;
+            padding: 20px; max-width: 800px; margin: auto;
+            border: 2px solid #00ff41; border-radius: 10px;
+        }
+        .panel {
+            background: #111; padding: 25px; border-radius: 15px;
+            border: 1px solid #333; margin-bottom: 20px;
+        }
+        h1, h2 { color: #ff00ff; text-align: center; }
+        h1 { font-size: 2.5em; margin-bottom: 5px; }
+        .tagline { text-align: center; color: #888; font-style: italic; margin-bottom: 30px; }
+        .scene-img {
+            width: 100%; height: 250px; object-fit: cover;
+            border-radius: 10px; border: 3px solid #00ff41;
+            margin: 20px 0; background: #222;
+        }
+        .question { font-size: 1.4em; margin: 25px 0; color: #ffff00; }
+        .options button {
+            display: block; width: 100%; padding: 15px;
+            margin: 10px 0; text-align: left;
+            background: #222; color: #00ccff;
+            border: 2px solid #00ccff; border-radius: 8px;
+            cursor: pointer; font-size: 1.1em;
+            transition: all 0.2s;
+        }
+        .options button:hover {
+            background: #00ccff; color: #000; font-weight: bold;
+            transform: scale(1.02);
+        }
+        .result {
+            padding: 20px; margin: 20px 0;
+            border-radius: 10px; display: none;
+            background: #1a1a1a; border-left: 5px solid;
+        }
+        .result.good { border-color: #00ff41; background: #0f1a0f; }
+        .result.bad {
+            border-color: #ff0000; background: #1a0f0f;
+            color: #ff6666;
+        }
+        .portfolio {
+            position: fixed; top: 20px; right: 20px;
+            background: #000; padding: 15px;
+            border: 2px solid #ffaa00; border-radius: 10px;
+            font-weight: bold;
+        }
+        .meme-text {
+            font-size: 1.8em; color: #ff55ff;
+            text-align: center; margin: 20px 0;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+        #finalScreen { text-align: center; display: none; }
+        #finalScreen img { max-width: 300px; margin: 20px; }
+        .restart {
+            background: linear-gradient(to right, #ff0080, #8000ff);
+            color: white; padding: 15px 40px;
+            font-size: 1.2em; border: none; border-radius: 50px;
+            cursor: pointer; margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="portfolio">
+        <span id="portfolioValue">🏦 Portfolio: $100,000</span>
+    </div>
+
+    <div class="panel" id="quizPanel">
+        <h1>🔥 DeFi Degenerate Survival Quiz 🔥</h1>
+        <p class="tagline">Can you survive 7 questions without getting rekt? Wrong answers cost you crypto.</p>
+
+        <div id="sceneContainer">
+            <!-- Scene image updates dynamically -->
+            <img id="sceneImage" class="scene-img" src="" alt="Meme scene">
+        </div>
+
+        <div id="questionContainer">
+            <div class="question" id="questionText"></div>
+            <div class="options" id="optionsContainer"></div>
+        </div>
+
+        <div id="resultContainer">
+            <!-- Results appear here -->
+        </div>
+    </div>
+
+    <div class="panel" id="finalScreen">
+        <h2 id="finalTitle">Quiz Complete!</h2>
+        <div class="meme-text" id="finalMemeText"></div>
+        <img id="finalImage" src="" alt="Final meme">
+        <p id="finalMessage"></p>
+        <button class="restart" onclick="restartQuiz()">🔄 Try Again (Maybe Use a Strategy This Time?)</button>
+    </div>
+
+    <script>
+        // ========== QUIZ DATA ==========
+        const quizData = [
+            {
+                question: "A 'based' anon DMs you a link to a new coin with '1000x guaranteed'. What do you do?",
+                options: [
+                    { text: "Ape in with 50% of your portfolio. YOLO.", correct: false, damage: 75000, meme: "rekt_ape.jpg", resultText: "You got rugged. The contract was a honeypot. -$75,000. 💀" },
+                    { text: "Do 10 minutes of research (check Twitter).", correct: false, damage: 10000, meme: "slow_rug.jpg", resultText: "You missed the obvious scam tweet. Still rugged. -$10,000. 🤡" },
+                    { text: "Ignore it and check the contract yourself on Basescan.", correct: true, meme: "chad.jpg", resultText: "You spot the mint function. You avoid disaster. Portfolio intact. 🧠" }
+                ]
+            },
+            {
+                question: "You're about to provide liquidity. The pool has an 838% APY. This is...",
+                options: [
+                    { text: "A life-changing opportunity. Max deposit.", correct: false, damage: 50000, meme: "impermanent_loss.jpg", resultText: "Impermanent loss hits you like a truck. -$50,000. 📉" },
+                    { text: "Suspicious. You check if it's a single-sided staking pool.", correct: true, meme: "smart.jpg", resultText: "You avoid a classic 'infinite mint' exploit. Wise. ✅" },
+                    { text: "Time to borrow against your house.", correct: false, damage: 85000, meme: "loan_shark.jpg", resultText: "The APY came from the dev's wallet. It's gone. So is your house. -$85,000. 🏚️" }
+                ]
+            },
+            {
+                question: "A meme says 'WAGMI'. You feel:",
+                options: [
+                    { text: "A sense of brotherhood. We're all in this together!", correct: false, damage: 15000, meme: "wagmi.jpg", resultText: "'We' all got rugged. You're not special. -$15,000. 👥" },
+                    { text: "Cautiously optimistic. You check who 'we' includes.", correct: true, meme: "vibe_check.jpg", resultText: "You filter out the noise. Focus on charts. Steady. 📊" },
+                    { text: "Nothing. You're here to make money, not friends.", correct: false, damage: 5000, meme: "lonely.jpg", resultText: "Profit is lonely, but effective. Minor gas fee loss. -$5,000. 🧊" }
+                ]
+            },
+            {
+                question: "Gas is spiking to 200 gwei. You need to exit a position. Do you:",
+                options: [
+                    { text: "Wait 5 minutes for it to drop. It always does.", correct: false, damage: 30000, meme: "gas_spike.jpg", resultText: "It spiked to 500. Your exit cost a fortune. -$30,000. ⛽" },
+                    { text: "Pay the fee. Survival is priceless.", correct: true, meme: "survive.jpg", resultText: "You live to trade another day. The fee was worth it. 💎" },
+                    { text: "Use a 'gasless' relay you found on GitHub.", correct: false, damage: 45000, meme: "hack.jpg", resultText: "The relay was malicious. Your private key is now public. -$45,000. 🚨" }
+                ]
+            },
+            {
+                question: "You see 'This is not financial advice' in a project's Twitter bio. This means:",
+                options: [
+                    { text: "They are legally covered, so it's probably safe.", correct: false, damage: 25000, meme: "legal.jpg", resultText: "You can't sue a pseudonymous cat profile. -$25,000. ⚖️" },
+                    { text: "They are definitely giving financial advice.", correct: false, damage: 20000, meme: "advice.jpg", resultText: "The advice was 'buy high, sell low.' You listened. -$20,000. 🔊" },
+                    { text: "Absolutely nothing. Assume everything is a risk.", correct: true, meme: "risk.jpg", resultText: "You treat all signals as noise. Your risk management is impeccable. 🛡️" }
+                ]
+            },
+            {
+                question: "Your trade is up 2%. A voice in your head says:",
+                options: [
+                    { text: "'TAKE PROFIT'. You sell immediately.", correct: false, damage: 8000, meme: "paper_hands.jpg", resultText: "It ran to 200% without you. Regret burns. -$8,000 in missed gains. 📜" },
+                    { text: "'DIAMOND HANDS'. You double down.", correct: false, damage: 40000, meme: "bagholder.jpg", resultText: "It crashed. You're now a community bagholder. -$40,000. 💎✋" },
+                    { text: "You stick to your pre-defined plan (you have one, right?).", correct: true, meme: "plan.jpg", resultText: "Boring. Profitable. You take partial profits. Steady gain. 📈" }
+                ]
+            },
+            {
+                question: "Final Boss: The chart is doing a parabolic move. You:",
+                options: [
+                    { text: "FOMO in. This is the launch to the moon!", correct: false, damage: 60000, meme: "parabolic.jpg", resultText: "You bought the top. The only launch was your portfolio into the abyss. -$60,000. 🚀📉" },
+                    { text: "Short it. It has to correct.", correct: false, damage: 70000, meme: "short_squeeze.jpg", resultText: "You got squeezed into oblivion. -$70,000. 🧻🐻" },
+                    { text: "Do nothing. You don't chase. You wait for your setup.", correct: true, meme: "zen.jpg", resultText: "Discipline. The market rewards patience. You spot the real entry later. 🧘" }
+                ]
+            }
+        ];
+
+        // ========== QUIZ STATE ==========
+        let currentQuestion = 0;
+        let portfolio = 100000;
+        let correctAnswers = 0;
+        const memeBaseUrl = "https://api.memegen.link/images"; // Fallback meme service
+
+        // ========== FUNCTIONS ==========
+        function startQuiz() {
+            document.getElementById('quizPanel').style.display = 'block';
+            document.getElementById('finalScreen').style.display = 'none';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = quizData[currentQuestion];
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('sceneImage').src = `https://api.memegen.link/images/ds/${currentQuestion + 1}.png`; // Dynamic meme
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            q.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = `${index + 1}. ${option.text}`;
+                button.onclick = () => selectAnswer(option);
+                optionsContainer.appendChild(button);
+            });
+
+            document.getElementById('resultContainer').innerHTML = '';
+        }
+
+        function selectAnswer(option) {
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.innerHTML = '';
+
+            const resultDiv = document.createElement('div');
+            resultDiv.className = option.correct ? 'result good' : 'result bad';
+
+            let resultHTML = `<h3>${option.correct ? '✅ SURVIVED' : '❌ REKT'}</h3>`;
+            resultHTML += `<p class="meme-text">${option.resultText}</p>`;
+
+            if (!option.correct) {
+                portfolio -= option.damage;
+                if (portfolio < 0) portfolio = 0;
+                updatePortfolioDisplay();
+                resultHTML += `<p><strong>Damage: -$${option.damage.toLocaleString()}</strong></p>`;
+            } else {
+                correctAnswers++;
+                portfolio += 5000; // Reward for correct answer
+                updatePortfolioDisplay();
+                resultHTML += `<p><strong>Bonus: +$5,000 for being smart!</strong></p>`;
+            }
+
+            resultDiv.innerHTML = resultHTML;
+            resultContainer.appendChild(resultDiv);
+            resultDiv.style.display = 'block';
+
+            // Move to next question or end
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showFinalScreen();
+                }
+            }, 3000);
+        }
+
+        function updatePortfolioDisplay() {
+            document.getElementById('portfolioValue').textContent = `🏦 Portfolio: $${portfolio.toLocaleString()}`;
+        }
+
+        function showFinalScreen() {
+            document.getElementById('quizPanel').style.display = 'none';
+            document.getElementById('finalScreen').style.display = 'block';
+
+            const title = document.getElementById('finalTitle');
+            const memeText = document.getElementById('finalMemeText');
+            const message = document.getElementById('finalMessage');
+            const finalImg = document.getElementById('finalImage');
+
+            // Determine outcome
+            let outcome;
+            if (portfolio <= 0) {
+                outcome = {
+                    title: "COMPLETE ANNIHILATION",
+                    meme: "You are now a Wendy's employee.",
+                    img: "https://api.memegen.link/images/both/_/You_just_got_absolutely_REKT.png",
+                    msg: "You've been financially obliterated. The only alpha left is the free wifi at the library. Maybe stick to traditional savings accounts."
+                };
+            } else if (portfolio < 50000) {
+                outcome = {
+                    title: "HEAVY BAGGAGE",
+                    meme: "Bagholder Emeritus",
+                    img: "https://api.memegen.link/images/sad/_/At_least_you_have_bags.png",
+                    msg: `You survived with $${portfolio.toLocaleString()}, but you're carrying heavy bags. ${correctAnswers}/7 correct. The emotional scars will heal. Maybe.`
+                };
+            } else if (portfolio < 100000) {
+                outcome = {
+                    title: "DEGEN SURVIVOR",
+                    meme: "Scarred but Smarter",
+                    img: "https://api.memegen.link/images/ugandanknuck/_/You_learned_the_hard_way.png",
+                    msg: `You made it out with $${portfolio.toLocaleString()} and ${correctAnswers}/7 correct. You've felt the market's wrath and lived. A true degenerati.`
+                };
+            } else {
+                outcome = {
+                    title: "GIGACHAD ALPHA",
+                    meme: "Portfolio: CHAD MODE",
+                    img: "https://api.memegen.link/images/chad/_/Portfolio_maximized.png",
+                    msg: `$${portfolio.toLocaleString()}! ${correctAnswers}/7 correct. You navigated the chaos like a legend. You are the 1%. (Now do it with real money).`
+                };
+            }
+
+            title.textContent = outcome.title;
+            memeText.textContent = outcome.meme;
+            finalImg.src = outcome.img;
+            message.textContent = outcome.msg;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            portfolio = 100000;
+            correctAnswers = 0;
+            updatePortfolioDisplay();
+            startQuiz();
+        }
+
+        // ========== START THE QUIZ ==========
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>

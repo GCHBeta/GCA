@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCAB Lore 📖</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Lore specific styles */
+        .lore-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .lore-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s;
+        }
+        
+        .lore-section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section-1 { border-color: var(--alpha-blue); }
+        .section-2 { border-color: var(--beta-orange); }
+        .section-3 { border-color: var(--based-purple); }
+        .section-4 { border-color: var(--delusion-green); }
+        .section-5 { border-color: var(--liquidity-red); }
+        
+        .lore-title {
+            color: inherit;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .lore-content {
+            line-height: 1.8;
+            color: #ddd;
+        }
+        
+        .lore-content p {
+            margin-bottom: 1.2rem;
+        }
+        
+        .highlight {
+            background: rgba(0, 238, 255, 0.1);
+            border-left: 4px solid var(--alpha-blue);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .quote {
+            background: rgba(255, 170, 0, 0.1);
+            border-left: 4px solid var(--beta-orange);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .warning {
+            background: rgba(255, 0, 85, 0.1);
+            border-left: 4px solid var(--liquidity-red);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--based-purple);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--based-purple);
+        }
+        
+        .timeline-date {
+            color: var(--based-purple);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-content {
+            color: #ddd;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .team-member {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--delusion-green);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .member-role {
+            color: var(--delusion-green);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .easter-egg {
+            cursor: pointer;
+            color: var(--based-purple);
+            text-decoration: underline dotted;
+        }
+        
+        .secret {
+            display: none;
+            background: rgba(157, 0, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 1px solid var(--based-purple);
+        }
+        
+        @media (max-width: 768px) {
+            .lore-container {
+                padding: 0 1rem;
+            }
+            
+            .lore-section {
+                padding: 1.5rem;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glitch-bg"></div>
+    
+    <header class="beta-header">
+        <div class="logo-container">
+            <h1 class="glitch-text" data-text="GCAB LORE">GCAB LORE</h1>
+            <div class="beta-badge">THE ANOMALY v0.9.9</div>
+        </div>
+        <nav class="beta-nav">
+            <a href="index.html" class="nav-link">🏠 Dashboard</a>
+            <a href="analytics.html" class="nav-link">📊 Analytics</a>
+            <a href="https://gchbeta.github.io/GCA/" class="nav-link" target="_blank">🎮 Play Game</a>
+            <a href="memes.html" class="nav-link">😂 Memes</a>
+            <a href="lore.html" class="nav-link active">📖 Lore</a>
+        </nav>
+    </header>
+
+    <main class="lore-container">
+        <!-- The Origin Story -->
+        <div class="lore-section section-1">
+            <h2 class="lore-title"><i class="fas fa-bolt"></i> THE ORIGIN: A SOLAR FLARE & SLEEP DEPRIVATION</h2>
+            <div class="lore-content">
+                <p>In November 2025, during a rare Class X solar flare, a sleep-deprived developer attempted to engineer "the ultimate Chair." The code was meant to be Alpha. The deployment was scheduled. The community was waiting.</p>
+                
+                <div class="highlight">
+                    <strong>The Anomaly:</strong> The code refused to compile as Alpha. Every build returned the same error: <code>STATUS_PERMA_BETA</code>. After 72 hours of debugging, the dev deployed anyway.
+                </div>
+                
+                <p>Thus, <strong>GIGACHAD ALPHA (Still Beta)</strong> was born—a token that identifies as Alpha but lives in Beta. A memetic anomaly that breaks its own changelog.</p>
+                
+                <div class="quote">
+                    "We didn't choose the beta life. The beta life chose us. The solar flare corrupted the compilation, and we decided to roll with it."
+                </div>
+            </div>
+        </div>
+
+        <!-- The Paradox -->
+        <div class="lore-section section-2">
+            <h2 class="lore-title"><i class="fas fa-infinity"></i> THE PARADOX: ALPHA FLEX, BETA VIBES</h2>
+            <div class="lore-content">
+                <p>GCAB exists at the intersection of meme, macro, and pure cope. It's not a token—it's a psychological state.</p>
+                
+                <div class="highlight">
+                    <strong>The Core Contradictions:</strong><br>
+                    1. <strong>Alpha by ambition</strong>, Beta by deployment<br>
+                    2. <strong>95% delusion</strong>, 4% liquidity, 1% roadmap<br>
+                    3. <strong>Based energy</strong> with questionable code<br>
+                    4. <strong>Sovereign choice</strong> on Base, zero VC funding
+                </div>
+                
+                <p>You don't "invest" in GCAB. You simply admit you're part of the experiment and ape in anyway.</p>
+                
+                <div class="warning">
+                    <strong>⚠️ WARNING:</strong> This is not financial advice. It's barely even advice. The only guarantee is that we'll remain in Beta.
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="lore-section section-3">
+            <h2 class="lore-title"><i class="fas fa-history"></i> TIMELINE OF THE ANOMALY</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">November 2025</div>
+                    <div class="timeline-content">Solar flare incident. GCAB born as "Still Beta" despite Alpha intentions.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">December 2025</div>
+                    <div class="timeline-content">First holders discover the anomaly. Community forms around the paradox.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">January 2026</div>
+                    <div class="timeline-content">Beta Control Panel v0.9.9 deployed. The ecosystem begins.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Present</div>
+                    <div class="timeline-content">Perpetual Beta status confirmed. Roadmap remains 6% complete.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Future (allegedly)</div>
+                    <div class="timeline-content">Will remain in Beta. This is the way.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Team (Anonymous) -->
+        <div class="lore-section section-4">
+            <h2 class="lore-title"><i class="fas fa-user-secret"></i> THE GHOST TEAM</h2>
+            <div class="lore-content">
+                <p>There is no team. There are only participants in the anomaly.</p>
+                
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div style="font-size: 2rem;">👨‍💻</div>
+                        <div><strong>The Sleep-Deprived Dev</strong></div>
+                        <div class="member-role">Coder of the Anomaly</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #888;">Last seen: Fixing bugs that don't exist</div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div style="font-size: 2rem;">🦍</div>
+                        <div><strong>The Based Community</strong></div>
+                        <div class="member-role">Holders of the Copium</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #888;">Activity: Generating memes, holding bags</div>
+                    </div>
+                    
+                    <div class="team-member">
+                        <div style="font-size: 2rem;">🌞</div>
+                        <div><strong>The Solar Flare</strong></div>
+                        <div class="member-role">Original Catalyst</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem; color: #888;">Status: Still flaring, probably</div>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 1.5rem; text-align: center; color: var(--alpha-blue);">
+                    <i class="fas fa-eye-slash"></i> No doxxed founders. No VC backers. Just pure, uncut based energy.
+                </p>
+            </div>
+        </div>
+
+        <!-- Secret Intel -->
+        <div class="lore-section section-5">
+            <h2 class="lore-title"><i class="fas fa-eye"></i> CLASSIFIED: SECRET INTEL</h2>
+            <div class="lore-content">
+                <p>The following information is <span class="easter-egg" onclick="revealSecret()">CLASSIFIED [CLICK TO REVEAL]</span>.</p>
+                
+                <div id="secret-intel" class="secret">
+                    <p><strong>SECRET DOCUMENT #GCAB-001</strong></p>
+                    <p>The "Beta" status is intentional. It's a psychological warfare tactic against traditional finance.</p>
+                    
+                    <div class="highlight">
+                        <strong>OPERATION PERPETUAL BETA:</strong><br>
+                        1. Stay in Beta to avoid Alpha expectations<br>
+                        2. Use "still beta" as both excuse and feature<br>
+                        3. Embrace the contradiction as brand identity<br>
+                        4. Profit from the confusion
+                    </div>
+                    
+                    <p>The 6% roadmap is accurate. The other 94% is pure vibes.</p>
+                    
+                    <div class="warning">
+                        <strong>⚠️ CLEARANCE LEVEL: BASED</strong><br>
+                        This document will self-destruct in 10 seconds...
+                    </div>
+                    
+                    <p style="margin-top: 1rem; font-size: 0.9rem; color: #888;">
+                        <i class="fas fa-clock"></i> Document expires: Never (we're still in beta)
+                    </p>
+                </div>
+                
+                <div class="quote" style="margin-top: 1.5rem;">
+                    "The greatest trick GCAB ever pulled was convincing the world it was 'still in beta' while being exactly what it intended to be all along."
+                </div>
+            </div>
+        </div>
+
+        <!-- The Contract -->
+        <div class="lore-section" style="border-color: var(--alpha-blue);">
+            <h2 class="lore-title"><i class="fas fa-file-code"></i> THE SACRED TEXT (CONTRACT)</h2>
+            <div class="lore-content">
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 1.5rem; border-radius: 10px; font-family: monospace; word-break: break-all; text-align: center; margin: 1rem 0;">
+                    0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07
+                </div>
+                
+                <p style="text-align: center;">
+                    <button onclick="copyContract()" style="background: var(--alpha-blue); color: var(--bg-dark); border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; margin: 0.5rem;">
+                        <i class="far fa-copy"></i> Copy Sacred Text
+                    </button>
+                    <button onclick="window.open('https://basescan.org/token/0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07')" style="background: var(--based-purple); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; margin: 0.5rem;">
+                        <i class="fas fa-external-link-alt"></i> View on Basescan
+                    </button>
+                </p>
+                
+                <p style="text-align: center; color: var(--delusion-green); margin-top: 1rem;">
+                    <i class="fas fa-gem"></i> This contract is immutable. Unlike our roadmap.
+                </p>
+            </div>
+        </div>
+
+        <!-- Final Words -->
+        <div class="lore-section" style="border-color: var(--beta-orange); text-align: center;">
+            <h2 class="lore-title"><i class="fas fa-comment"></i> FINAL TRANSMISSION</h2>
+            <div class="lore-content">
+                <p style="font-size: 1.2rem; margin-bottom: 1.5rem;">
+                    "We're not a token. We're a state of mind."
+                </p>
+                
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0;">
+                    <span style="background: rgba(0, 238, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; color: var(--alpha-blue);">Alpha flex</span>
+                    <span style="background: rgba(255, 170, 0, 0.1); padding: 0.5rem 1rem; border-radius: 20px; color: var(--beta-orange);">Beta vibes</span>
+                    <span style="background: rgba(157, 0, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; color: var(--based-purple);">Forever</span>
+                </div>
+                
+                <p style="margin-top: 1.5rem; color: #888;">
+                    This lore document is also in beta. It may change. It may not. We'll see.
+                </p>
+                
+                <p style="margin-top: 2rem;">
+                    <button onclick="window.location.href='index.html'" style="background: linear-gradient(45deg, var(--alpha-blue), var(--based-purple)); color: white; border: none; padding: 1rem 2rem; border-radius: 10px; cursor: pointer; font-size: 1.1rem;">
+                        <i class="fas fa-rocket"></i> RETURN TO CONTROL PANEL
+                    </button>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="beta-footer">
+        <div class="footer-content">
+            <p><strong>GCAB LORE v0.9.9</strong> | Official mythology of the anomaly</p>
+            <p>95% true story, 5% copium, 100% based | Document status: Perpetual Beta</p>
+            <p class="easter-egg-hint">The lore expands with every holder. Add your chapter.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ===== FUNCTIONS =====
+        function revealSecret() {
+            const secret = document.getElementById('secret-intel');
+            secret.style.display = 'block';
+            
+            // Animate
+            secret.style.animation = 'none';
+            setTimeout(() => {
+                secret.style.animation = 'glitch 0.5s';
+            }, 10);
+            
+            // Show notification
+            showNotification('CLASSIFIED INTEL REVEALED', 'warning');
+            
+            // Add glitch animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes glitch {
+                    0% { transform: translate(0); opacity: 0; }
+                    20% { transform: translate(-2px, 2px); opacity: 0.5; }
+                    40% { transform: translate(-2px, -2px); opacity: 0.8; }
+                    60% { transform: translate(2px, 2px); opacity: 1; }
+                    80% { transform: translate(2px, -2px); opacity: 0.9; }
+                    100% { transform: translate(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function copyContract() {
+            navigator.clipboard.writeText('0x6d0B8eB75E9d6735cc301c3a6E82adeE43590B07');
+            showNotification('Contract copied! The sacred text is yours.', 'success');
+        }
+
+        function showNotification(message, type = 'info') {
+            const colors = {
+                info: 'var(--alpha-blue)',
+                success: 'var(--delusion-green)',
+                warning: 'var(--beta-orange)',
+                error: 'var(--liquidity-red)'
+            };
+            
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${colors[type]};
+                color: ${type === 'warning' ? 'var(--bg-dark)' : 'white'};
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                z-index: 1000;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // ===== EASTER EGGS =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📖 GCAB Lore Initialized');
+            
+            // Add click effects to lore sections
+            document.querySelectorAll('.lore-section').forEach(section => {
+                section.addEventListener('click', function(e) {
+                    if (e.target.closest('button') || e.target.closest('a')) return;
+                    
+                    this.style.transform = 'scale(0.99)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+            
+            // Secret page view counter
+            const views = localStorage.getItem('gcab_lore_views') || 0;
+            localStorage.setItem('gcab_lore_views', parseInt(views) + 1);
+            
+            if (parseInt(views) > 5) {
+                const secretMsg = document.createElement('div');
+                secretMsg.innerHTML = `
+                    <div style="position: fixed; bottom: 20px; right: 20px; background: var(--based-purple); color: white; padding: 1rem; border-radius: 8px; z-index: 1000; animation: fadeIn 0.5s;">
+                        <i class="fas fa-user-secret"></i> Lore Master: You've read this ${parseInt(views) + 1} times.
+                    </div>
+                `;
+                document.body.appendChild(secretMsg);
+                
+                setTimeout(() => {
+                    secretMsg.style.animation = 'fadeOut 0.5s';
+                    setTimeout(() => {
+                        if (secretMsg.parentNode) {
+                            secretMsg.parentNode.removeChild(secretMsg);
+                        }
+                    }, 500);
+                }, 5000);
+            }
+            
+            console.log('✅ GCAB Lore Ready');
+        });
+
+        // Add animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
