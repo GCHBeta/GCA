@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCAB Beta Command Center 🏋️</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="icon" type="image/x-icon" href="assets/icons/beta-favicon.ico">
+</head>
+<body class="beta-theme">
+    <!-- GLITCH BACKGROUND EFFECT -->
+    <div class="glitch-bg"></div>
+    
+    <!-- HEADER -->
+    <header class="beta-header">
+        <div class="logo-container">
+            <h1 class="glitch-text" data-text="GIGACHAD ALPHA">GIGACHAD ALPHA</h1>
+            <div class="beta-badge">STILL BETA</div>
+        </div>
+        <nav class="beta-nav">
+            <a href="index.html" class="nav-link active">🏠 Command Center</a>
+            <a href="alpha.html" class="nav-link">📊 Alpha Stats</a>
+            <a href="basement.html" class="nav-link">😂 Meme Arena</a>
+            <a href="myth.html" class="nav-link">📖 Lore</a>
+        </nav>
+    </header>
+
+    <main class="dashboard">
+        <!-- LIVE STATS SECTION -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>💎 $GCAB Price</h3>
+                <div class="stat-value loading" id="price">--</div>
+                <div class="stat-change" id="price-change">--</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>👥 Holders</h3>
+                <div class="stat-value loading" id="holders">--</div>
+                <div class="stat-sub">Based souls</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>📈 Market Cap</h3>
+                <div class="stat-value loading" id="market-cap">--</div>
+                <div class="stat-sub">95% delusion</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>⏳ Time in Beta</h3>
+                <div class="stat-value" id="beta-days">∞</div>
+                <div class="stat-sub">Perpetual</div>
+            </div>
+        </section>
+
+        <!-- COPIUM CALCULATOR -->
+        <section class="calculator-section">
+            <h2>🧪 Copium Calculator</h2>
+            <div class="calculator">
+                <div class="calc-inputs">
+                    <label>GCAB Amount:</label>
+                    <input type="number" id="gcab-amount" placeholder="e.g., 1000000" min="0">
+                    
+                    <label>Delusion Level (%):</label>
+                    <input type="range" id="delusion-slider" min="1" max="100" value="95">
+                    <span id="delusion-value">95%</span>
+                    
+                    <button id="calculate-btn">Calculate Moon Math</button>
+                </div>
+                
+                <div class="calc-results">
+                    <div class="result" id="result-moon">🌙 Moon: $--</div>
+                    <div class="result" id="result-reality">📉 Reality: $--</div>
+                    <div class="result" id="result-advice">💊 Take this much copium: -- mg</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUICK LINKS -->
+        <section class="links-section">
+            <h2>🚀 Quick Launch</h2>
+            <div class="links-grid">
+                <a href="https://app.uniswap.org/swap?chain=base&outputCurrency=0x6d0B8eb7BE9d6735cc301c3a6E82adeE43590B07" 
+                   class="link-card" target="_blank">
+                    <div class="link-icon">🔄</div>
+                    <div class="link-title">Buy $GCAB</div>
+                    <div class="link-desc">Uniswap (Base)</div>
+                </a>
+                
+                <a href="https://t.me/GCHBeta" class="link-card" target="_blank">
+                    <div class="link-icon">💬</div>
+                    <div class="link-title">Telegram</div>
+                    <div class="link-desc">Chaos channel</div>
+                </a>
+                
+                <a href="https://x.com/GCHBeta" class="link-card" target="_blank">
+                    <div class="link-icon">𝕏</div>
+                    <div class="link-title">Twitter</div>
+                    <div class="link-desc">Meme central</div>
+                </a>
+                
+                <a href="https://basescan.org/token/0x6d0B8eb7BE9d6735cc301c3a6E82adeE43590B07" 
+                   class="link-card" target="_blank">
+                    <div class="link-icon">🔍</div>
+                    <div class="link-title">Basescan</div>
+                    <div class="link-desc">Contract & Analytics</div>
+                </a>
+                
+                <a href="https://v2.bubblemaps.io/map?address=0x6d0B8eb7BE9d6735cc301c3a6E82adeE43590B07&chain=base" 
+                   class="link-card" target="_blank">
+                    <div class="link-icon">🫧</div>
+                    <div class="link-title">Bubble Map</div>
+                    <div class="link-desc">Holder distribution</div>
+                </a>
+                
+                <a href="https://gchbeta.github.io/GCA/" class="link-card" target="_blank">
+                    <div class="link-icon">🌐</div>
+                    <div class="link-title">Main Website</div>
+                    <div class="link-desc">Original vibe</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- CONTRACT DISPLAY -->
+        <section class="contract-section">
+            <h2>📝 Contract (Copy This)</h2>
+            <div class="contract-box">
+                <code id="contract-address">0x6d0B8eb7BE9d6735cc301c3a6E82adeE43590B07</code>
+                <button id="copy-contract" class="copy-btn">📋 Copy</button>
+            </div>
+            <p class="disclaimer">This is the official GCAB contract on Base. Always verify.</p>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="beta-footer">
+        <div class="footer-content">
+            <p>GIGACHAD ALPHA (STILL BETA) — Alpha flex, Beta vibes, Forever.</p>
+            <p>Not financial advice. Not even regular advice. 95% delusion. 4% liquidity. 100% Base.</p>
+            <p class="easter-egg-hint">Hint: Try clicking the beta badge 7 times... 👀</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/token-stats.js"></script>
+    <script src="js/copium-calc.js"></script>
+</body>
+</html>
