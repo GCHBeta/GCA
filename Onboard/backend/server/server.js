@@ -316,15 +316,22 @@ app.get("/holders", (req, res) => {
 
 //sidekick routes
 app.get("/sidekick/me", (req, res) => {
-  const owner = String(req.query.owner || "").toLowerCase();
-  if (!owner) return res.status(400).json({ error: "owner required" });
+  try {
+    const owner = normAddr(req.query.owner).toLowerCase();
 
-  // pick the newest binding if multiple exist
-  const row = db
-    .prepare("SELECT * FROM sidekicks WHERE owner = ? ORDER BY rowid DESC LIMIT 1")
-    .get(owner);
+    const row = db.prepare(`
+      SELECT owner, target, updated_at
+      FROM sidekicks
+      WHERE owner = ?
+      ORDER BY updated_at DESC
+      LIMIT 1
+    `).get(owner);
 
-  return res.json({ owner, sidekick: row || null });
+    // Return a consistent shape expected by frontend
+    res.json({ ok: true, sidekick: row || null });
+  } catch (e) {
+    res.status(400).json({ ok: false, error: "Bad owner" });
+  }
 });
 
 /* --- Candidates: limited by default (prevents infinite panel) --- */
@@ -580,6 +587,25 @@ app.get("/buy/history", (req, res) => {
   }
 });
 
+// helper para frontend
+
+async function signAuth() {
+  if (!signer || !userAddress) {
+    throw new Error("Wallet not connected");
+  }
+
+  // 1) Ask backend for nonce + message
+  const r = await fetch(`${API_BASE}/auth/nonce?address=${userAddress}`);
+  const data = await r.json();
+  if (!r.ok) throw new Error(data?.error || "Failed to get nonce");
+
+  const { message } = data;
+
+  // 2) Sign message
+  const signature = await signer.signMessage(message);
+
+  return signature;
+}
 
 /* =========================================================
    ENERGY v1 (claim diário UTC + budget)

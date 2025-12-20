@@ -14,8 +14,9 @@ const BACKEND = {
 
 //temp backend guard
 function hasBackend() {
-  return typeof API_BASE === "string" && API_BASE.startsWith("https");
+  return typeof API_BASE === "string" && API_BASE.startsWith("http");
 }
+
 
 
 (() => {
@@ -94,6 +95,12 @@ function hasBackend() {
   if (modeTextEl) modeTextEl.textContent = isLive ? "LIVE" : "LORE";
 }
 
+function unwrapSidekickTarget(x) {
+  if (!x) return x;
+  const s = String(x);
+  return s.startsWith("candidate:") ? s.slice("candidate:".length) : s;
+}
+
 
   // ========= UI HELPERS =========
   function setStatus(msg) {
@@ -117,31 +124,6 @@ function hasBackend() {
     if (releaseBtn) releaseBtn.disabled = isBusy || !userAddress;
     if (msg) setStatus(msg);
   }
-
-async function loadMySidekick() {
-  if (!userAddress || !hasBackend()) return;
-
-  try {
-    const r = await safefetch(`${API_BASE}/sidekick/me?owner=${userAddress}`);
-    if (!r.ok) throw new Error("sidekick fetch failed");
-
-    const data = await r.json();
-    const row = data.sidekick;
-
-    if (!sidekickText) return;
-
-    const raw = row?.sidekick || "";              // <-- DB column is "sidekick"
-    const addr = raw.startsWith("candidate:") ? raw.slice(10) : raw;
-
-    sidekickText.textContent = addr
-      ? `${addr.slice(0, 6)}…${addr.slice(-4)}`
-      : "—";
-  } catch (e) {
-    console.warn(e);
-    if (sidekickText) sidekickText.textContent = "—";
-  }
-}
-
 
 
   // ========= GAME LOGIC (Power/Rank) =========
@@ -453,94 +435,118 @@ async function tryAutoConnect() {
     }
   }
 
-  // ========= BUY + CLAIM (REAL) =========
-async function buyIntent(target) {
+  async function signAuth() {
+  if (!signer || !userAddress) throw new Error("Wallet not connected");
+
+  const r = await fetch(`${API_BASE}/auth/nonce?address=${userAddress}`);
+  const data = await r.json();
+  if (!r.ok) throw new Error(data?.error || "Failed to get nonce");
+
+  return await signer.signMessage(data.message);
+}
+
+// ========= BUY + CLAIM (REAL) =========
+async function buyIntent(candidate) {
+  const signature = await signAuth();
+
   const r = await fetch(`${API_BASE}/buy/intent`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ buyer: userAddress, target })
+    body: JSON.stringify({
+      address: userAddress,
+      signature,
+      candidate
+    })
   });
+
   const data = await r.json();
   if (!r.ok) throw new Error(data?.error || "Intent failed");
-  return data; // expect { price, payTo, ... }
+  return data; // { intentId, to, amount, amountRaw, ... }
 }
 
-async function buyConfirm(target, txHash) {
+async function buyConfirm(intentId, txHash) {
+  const signature = await signAuth();
+
   const r = await fetch(`${API_BASE}/buy/confirm`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ buyer: userAddress, target, txHash })
+    body: JSON.stringify({
+      address: userAddress,
+      signature,
+      intentId,
+      txHash
+    })
   });
+
   const data = await r.json();
   if (!r.ok) throw new Error(data?.error || "Confirm failed");
   return data;
 }
 
+async function buyAndClaimTarget(candidate, btnEl) {
+  if (isBusy) return;
 
-  async function buyAndClaimTarget(target, btnEl) {
-    if (isBusy) return;
-    if (!signer || !userAddress) return;
+  if (!signer || !userAddress) {
+    setStatus("Connect wallet first.");
+    return;
+  }
 
-    busy(true, "Summoning quote…");
-    if (btnEl) btnEl.disabled = true;
+  busy(true, "Summoning quote…");
+  if (btnEl) btnEl.disabled = true;
 
-    try {
-      // 1) Quote from backend
-      const q = await buyIntent(target);
+  try {
+    // 1) Get intent from backend
+    const q = await buyIntent(candidate);
 
-// Guard / normalize backend response
-const price = q.price ?? q.amount ?? q.cost;
-const payTo = q.payTo ?? q.treasury ?? q.to;
+    const payTo = q.to;
+    const intentId = q.intentId;
 
-if (!price || !payTo) {
-  console.error("Bad intent payload:", q);
-  throw new Error("Backend intent missing price or payTo");
+    if (!payTo || !intentId) {
+      console.error("Bad intent payload:", q);
+      throw new Error("Backend intent missing to/intentId");
+    }
+
+    // 2) Transfer exactly amountRaw to treasury (no float rounding)
+    const tokenWithSigner = new ethers.Contract(GCAB_TOKEN_ADDRESS, ERC20_ABI, signer);
+    const amountRaw = BigInt(q.amountRaw);
+
+    setStatus(`Offer: ${q.amount} GCAb → Treasury. Sign the transfer.`);
+    const tx = await tokenWithSigner.transfer(payTo, amountRaw);
+
+    setStatus(`Waiting confirmation (${tx.hash.slice(0, 10)}…)`);
+    const receipt = await tx.wait();
+    if (!receipt || receipt.status !== 1) throw new Error("Transfer failed");
+
+    // 3) Confirm on backend (records buy + binds sidekick)
+    setStatus("Binding complete… writing into the ledger.");
+    const committed = await buyConfirm(intentId, tx.hash);
+    console.log("confirm:", committed);
+
+    // 4) Refresh UI
+    await refreshAura();
+    await loadAndRenderCandidates();
+    await loadMySidekick();
+
+    setStatus("Claim sealed. Sidekick bound.");
+  } catch (e) {
+    console.error(e);
+    setStatus(e?.message || "Buy/Claim failed.");
+  } finally {
+    if (btnEl) btnEl.disabled = false;
+    busy(false);
+  }
 }
 
-// Transfer
-setStatus(`Offer: ${fmt(price)} GCAb → Treasury. Sign the transfer.`);
 
-const tokenWithSigner = new ethers.Contract(GCAB_TOKEN_ADDRESS, ERC20_ABI, signer);
-const amountRaw = ethers.parseUnits(String(price), gcab.decimals || 18);
-
-const tx = await tokenWithSigner.transfer(payTo, amountRaw);
-      // 2) Wait for blockchain confirmation
-      setStatus(`The Forge accepts… waiting confirmation (${tx.hash.slice(0, 10)}…)`);
-
-      const receipt = await tx.wait();
-      if (!receipt || receipt.status !== 1) throw new Error("Transfer failed");
-
-      // 3) Commit on backend (records split + claims)
-      setStatus("Binding complete… writing into the ledger.");
-      const committed = await buyConfirm(target, tx.hash);
-      await loadMySidekick();
-
-
-      // 4) Refresh UI
-      await refreshAura();
-      await loadAndRenderCandidates();
-      await loadMySidekick();
-
-
-      setStatus(`Claim sealed. 20% burn confirmed. Sidekick bound.`);
-    } catch (e) {
-      console.error(e);
-      setStatus(e?.message || "Buy/Claim failed.");
-    } finally {
-      if (btnEl) btnEl.disabled = false;
-      busy(false);
-    }
-  }
     //loadsidekick
-    async function loadMySidekick() {
-  if (!userAddress) return;
+  async function loadMySidekick() {
+  if (!userAddress || !hasBackend()) return;
 
   try {
     const r = await safefetch(`${API_BASE}/sidekick/me?owner=${userAddress}`);
     const data = await r.json();
 
     if (!r.ok) throw new Error(data?.error || "Failed to load sidekick");
-
     if (!sidekickText) return;
 
     const sk = data.sidekick;
@@ -549,17 +555,24 @@ const tx = await tokenWithSigner.transfer(payTo, amountRaw);
       return;
     }
 
-    // adapt to your schema: owner/target vs ownerAddr/targetAddr etc.
-    const target = sk.target || sk.target_address || sk.sidekick || sk.address;
+    // Supports multiple schemas + strips "candidate:"
+    const raw =
+      sk.target ||
+      sk.target_address ||
+      sk.sidekick ||
+      sk.address ||
+      sk.sidekick_address;
+
+    const target = unwrapSidekickTarget(raw);
+
     sidekickText.textContent = target
       ? `${target.slice(0, 6)}…${target.slice(-4)}`
-      : "(unknown)";
+      : "—";
   } catch (e) {
     console.warn(e);
     if (sidekickText) sidekickText.textContent = "—";
   }
 }
-
 
 
   // ========= SANDBOX STREAK (local only) =========
