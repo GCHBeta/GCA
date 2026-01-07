@@ -5077,7 +5077,7 @@
             // Tax timer
             if (nextTaxEl && gameState.economy.lastTaxPayment) {
                 const timeSinceLastTax = Date.now() - gameState.economy.lastTaxPayment;
-                const taxPeriod = 300000; // 5 minutes
+                const taxPeriod = 86400000; // 24 hours in ms
                 const timeUntilTax = taxPeriod - (timeSinceLastTax % taxPeriod);
                 const minutes = Math.floor(timeUntilTax / 60000);
                 const seconds = Math.floor((timeUntilTax % 60000) / 1000);
