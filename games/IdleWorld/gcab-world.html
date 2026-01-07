@@ -541,6 +541,7 @@
             animation: pulse 1.5s ease-in-out infinite;
         }
     </style>
+    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -942,12 +943,12 @@
                 <div style="padding: 15px; background: var(--bg-tertiary); border: 2px solid var(--border-color); border-radius: 10px; margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <div>
-                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Daily Trade Tax</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary);">Periodic Tax</div>
                             <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent-gold);">
-                                <span id="dailyTaxAmount">1</span> Silver
+                                <span id="dailyTaxAmount">10% Income</span>
                             </div>
                             <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">
-                                Next payment: <span id="nextTaxTime">24:00:00</span>
+                                Next payment: <span id="nextTaxTime">5:00</span>
                             </div>
                         </div>
                         <button class="btn btn-primary" onclick="payTaxEarly()" style="min-width: 150px;">
@@ -967,6 +968,45 @@
             <div class="screen">
                 <h2 class="screen-title">💎 Premium Shop</h2>
                 <p class="card-description">Purchase quality-of-life upgrades, boosts, and cosmetics with Gold. No pay-to-win!</p>
+                
+                <!-- Wallet Connection & Gold Store -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <!-- MetaMask Wallet -->
+                    <div style="padding: 20px; background: linear-gradient(135deg, rgba(244, 162, 97, 0.2), rgba(255, 215, 0, 0.2)); border: 2px solid var(--accent-gold); border-radius: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                            <div style="font-size: 2rem;">🦊</div>
+                            <div style="font-size: 1.2rem; font-weight: 700;">MetaMask Wallet</div>
+                        </div>
+                        <div id="walletStatus">
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px;">Status: Not Connected</div>
+                            <button class="btn btn-primary" onclick="connectWallet()" id="connectWalletBtn">
+                                Connect Wallet
+                            </button>
+                        </div>
+                        <div id="walletConnected" style="display: none;">
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Connected Address:</div>
+                            <div style="font-family: monospace; font-size: 0.85rem; color: var(--accent-green); word-break: break-all; margin-bottom: 10px;" id="walletAddress">0x...</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Network:</div>
+                            <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 10px;" id="walletNetwork">Base</div>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 5px;">Balance:</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 15px;" id="walletBalance">0 ETH</div>
+                            <button class="btn btn-secondary" onclick="disconnectWallet()">
+                                Disconnect
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Gold Store -->
+                    <div style="padding: 20px; background: var(--bg-tertiary); border: 2px solid var(--border-color); border-radius: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                            <div style="font-size: 2rem;">🏪</div>
+                            <div style="font-size: 1.2rem; font-weight: 700;">Buy Gold with ETH</div>
+                        </div>
+                        <div id="goldStorePackages">
+                            <!-- Gold packages will be shown here -->
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Gold Balance & Exchange -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
@@ -1092,6 +1132,61 @@
                 
                 <div class="cards-grid">
                     <div class="card">
+                        <h3 class="card-title">🔊 Audio Settings</h3>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <!-- Music Controls -->
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="font-weight: 700;">🎵 Background Music</label>
+                                    <button class="btn btn-secondary" onclick="toggleMusic()" id="musicToggle" style="padding: 6px 12px; min-width: 80px;">
+                                        <span id="musicStatus">ON</span>
+                                    </button>
+                                </div>
+                                <input type="range" min="0" max="100" value="30" 
+                                       oninput="setMusicVolume(this.value)" 
+                                       id="musicVolumeSlider"
+                                       style="width: 100%; accent-color: var(--accent-gold);">
+                                <div style="text-align: center; font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;">
+                                    Volume: <span id="musicVolumeDisplay">30</span>%
+                                </div>
+                            </div>
+                            
+                            <!-- Sound Effects Controls -->
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <label style="font-weight: 700;">🔔 Sound Effects</label>
+                                    <button class="btn btn-secondary" onclick="toggleSFX()" id="sfxToggle" style="padding: 6px 12px; min-width: 80px;">
+                                        <span id="sfxStatus">ON</span>
+                                    </button>
+                                </div>
+                                <input type="range" min="0" max="100" value="50" 
+                                       oninput="setSFXVolume(this.value)" 
+                                       id="sfxVolumeSlider"
+                                       style="width: 100%; accent-color: var(--accent-blue);">
+                                <div style="text-align: center; font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px;">
+                                    Volume: <span id="sfxVolumeDisplay">50</span>%
+                                </div>
+                            </div>
+                            
+                            <!-- Music Track Selection -->
+                            <div>
+                                <label style="font-weight: 700; display: block; margin-bottom: 8px;">🎼 Music Track</label>
+                                <select id="trackSelect" onchange="changeTrack(this.value)" 
+                                        style="width: 100%; padding: 10px; background: var(--bg-primary); color: var(--text-primary); border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                                    <option value="ambient">Ambient Exploration</option>
+                                    <option value="upbeat">Upbeat Trading</option>
+                                    <option value="chill">Chill Crafting</option>
+                                    <option value="adventure">Adventure Theme</option>
+                                </select>
+                            </div>
+                            
+                            <button class="btn btn-secondary" onclick="testSound()">
+                                🔊 Test Sound
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
                         <h3 class="card-title">💾 Save & Load</h3>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <button class="btn btn-primary" onclick="saveGame()">💾 Save Game</button>
@@ -1199,8 +1294,9 @@
                 currentEvent: null,
                 eventEndTime: null,
                 lastTaxPayment: Date.now(),
-                taxRate: 1,
-                maintenanceCosts: 0
+                taxRate: 0.10, // 10% of earned silver
+                taxType: 'income', // 'income' or 'wealth'
+                silverAtLastTax: 0
             },
             quests: {
                 daily: [],
@@ -1219,6 +1315,19 @@
                 xp: 0,
                 xpToNext: 1000,
                 startTime: Date.now()
+            },
+            wallet: {
+                connected: false,
+                address: null,
+                balance: 0,
+                network: null
+            },
+            audio: {
+                musicEnabled: true,
+                sfxEnabled: true,
+                musicVolume: 0.3,
+                sfxVolume: 0.5,
+                currentTrack: 'ambient'
             }
         };
 
@@ -2394,6 +2503,7 @@
         // Initialize Game
         function initGame() {
             loadGame();
+            initAudioSystem();
             initializeEconomy();
             initializeQuests();
             renderBiomeActions();
@@ -2410,6 +2520,8 @@
             renderAchievements();
             renderShop();
             renderCharacter();
+            renderWalletStatus();
+            renderGoldStore();
             
             // Setup navigation
             document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -2751,6 +2863,7 @@
                     }
                     
                     showNotification(`🏆 Achievement Unlocked: ${achievement.name}!`, 'success');
+                    playSound('achievement');
                     addActivity(`Unlocked achievement: ${achievement.name}`);
                 }
             }
@@ -2900,23 +3013,27 @@
             // Check if can afford
             if (gameState.gold < item.cost) {
                 showNotification('Not enough Gold!', 'error');
+                playSound('error');
                 return;
             }
             
             // Check requirements
             if (item.requires && !gameState.shop.purchased.includes(item.requires)) {
                 showNotification(`Requires ${shopItems[item.requires].name} first!`, 'error');
+                playSound('error');
                 return;
             }
             
             // Check if already owned (permanent)
             if (item.permanent && gameState.shop.purchased.includes(itemId)) {
                 showNotification('Already owned!', 'error');
+                playSound('error');
                 return;
             }
             
             // Purchase
             gameState.gold -= item.cost;
+            playSound('purchase');
             
             if (item.permanent) {
                 gameState.shop.purchased.push(itemId);
@@ -3433,6 +3550,565 @@
             closeAvatarPicker();
         }
         
+        // MetaMask Wallet & Gold Store Functions
+        const goldPackages = [
+            {
+                id: 'starter',
+                name: 'Starter Pack',
+                gold: 10,
+                eth: '0.001',
+                bonus: 0,
+                popular: false
+            },
+            {
+                id: 'value',
+                name: 'Value Pack',
+                gold: 50,
+                eth: '0.004',
+                bonus: 10,
+                popular: true
+            },
+            {
+                id: 'mega',
+                name: 'Mega Pack',
+                gold: 150,
+                eth: '0.010',
+                bonus: 50,
+                popular: false
+            },
+            {
+                id: 'ultimate',
+                name: 'Ultimate Pack',
+                gold: 500,
+                eth: '0.030',
+                bonus: 200,
+                popular: false
+            }
+        ];
+        
+        // Base Network Configuration
+        const BASE_MAINNET = {
+            chainId: '0x2105', // 8453 in hex
+            chainName: 'Base',
+            nativeCurrency: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                decimals: 18
+            },
+            rpcUrls: ['https://mainnet.base.org'],
+            blockExplorerUrls: ['https://basescan.org']
+        };
+        
+        const BASE_SEPOLIA = {
+            chainId: '0x14a34', // 84532 in hex
+            chainName: 'Base Sepolia',
+            nativeCurrency: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                decimals: 18
+            },
+            rpcUrls: ['https://sepolia.base.org'],
+            blockExplorerUrls: ['https://sepolia.basescan.org']
+        };
+        
+        async function connectWallet() {
+            if (typeof window.ethereum === 'undefined') {
+                showNotification('MetaMask not detected! Please install MetaMask extension.', 'error');
+                window.open('https://metamask.io/download/', '_blank');
+                return;
+            }
+            
+            try {
+                // Request account access
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const address = accounts[0];
+                
+                // Check network
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const network = await provider.getNetwork();
+                const chainId = network.chainId;
+                
+                // Check if on Base network (8453 mainnet or 84532 sepolia)
+                if (chainId !== 8453 && chainId !== 84532) {
+                    showNotification('⚠️ Please switch to Base network', 'error');
+                    
+                    // Try to switch to Base mainnet
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: BASE_MAINNET.chainId }],
+                        });
+                    } catch (switchError) {
+                        // If Base is not added, add it
+                        if (switchError.code === 4902) {
+                            try {
+                                await window.ethereum.request({
+                                    method: 'wallet_addEthereumChain',
+                                    params: [BASE_MAINNET],
+                                });
+                            } catch (addError) {
+                                console.error('Failed to add Base network:', addError);
+                                showNotification('Failed to add Base network. Please add it manually.', 'error');
+                                return;
+                            }
+                        } else {
+                            console.error('Failed to switch network:', switchError);
+                            showNotification('Failed to switch to Base network.', 'error');
+                            return;
+                        }
+                    }
+                    
+                    // Reconnect after network switch
+                    setTimeout(() => connectWallet(), 1000);
+                    return;
+                }
+                
+                // Get balance
+                const balance = await provider.getBalance(address);
+                const balanceInEth = ethers.utils.formatEther(balance);
+                
+                // Update game state
+                gameState.wallet.connected = true;
+                gameState.wallet.address = address;
+                gameState.wallet.balance = parseFloat(balanceInEth);
+                gameState.wallet.network = chainId === 8453 ? 'Base Mainnet' : 'Base Sepolia';
+                
+                // Update UI
+                renderWalletStatus();
+                renderGoldStore();
+                
+                showNotification(`Wallet connected on ${gameState.wallet.network}!`, 'success');
+                playSound('success');
+                addActivity(`Connected wallet: ${address.substring(0, 6)}...${address.substring(38)}`);
+                
+                // Listen for account changes
+                window.ethereum.on('accountsChanged', handleAccountsChanged);
+                window.ethereum.on('chainChanged', handleChainChanged);
+                
+            } catch (error) {
+                console.error('Wallet connection error:', error);
+                showNotification('Failed to connect wallet. Please try again.', 'error');
+                playSound('error');
+            }
+        }
+        
+        function handleChainChanged(chainId) {
+            // Convert hex to decimal
+            const decimalChainId = parseInt(chainId, 16);
+            
+            // Check if still on Base
+            if (decimalChainId !== 8453 && decimalChainId !== 84532) {
+                disconnectWallet();
+                showNotification('⚠️ Disconnected - Please use Base network only', 'error');
+            } else {
+                // Refresh connection
+                connectWallet();
+            }
+        }
+        
+        function handleAccountsChanged(accounts) {
+            if (accounts.length === 0) {
+                disconnectWallet();
+            } else {
+                connectWallet(); // Reconnect with new account
+            }
+        }
+        
+        function disconnectWallet() {
+            gameState.wallet.connected = false;
+            gameState.wallet.address = null;
+            gameState.wallet.balance = 0;
+            gameState.wallet.network = null;
+            
+            renderWalletStatus();
+            renderGoldStore();
+            
+            showNotification('Wallet disconnected', 'success');
+        }
+        
+        function renderWalletStatus() {
+            const walletStatusDiv = document.getElementById('walletStatus');
+            const walletConnectedDiv = document.getElementById('walletConnected');
+            
+            if (!walletStatusDiv || !walletConnectedDiv) return;
+            
+            if (gameState.wallet.connected) {
+                walletStatusDiv.style.display = 'none';
+                walletConnectedDiv.style.display = 'block';
+                
+                const addressEl = document.getElementById('walletAddress');
+                const balanceEl = document.getElementById('walletBalance');
+                const networkEl = document.getElementById('walletNetwork');
+                
+                if (addressEl) {
+                    const addr = gameState.wallet.address;
+                    addressEl.textContent = `${addr.substring(0, 6)}...${addr.substring(38)}`;
+                }
+                
+                if (balanceEl) {
+                    balanceEl.textContent = `${gameState.wallet.balance.toFixed(4)} ETH`;
+                }
+                
+                if (networkEl) {
+                    networkEl.textContent = gameState.wallet.network || 'Base';
+                }
+            } else {
+                walletStatusDiv.style.display = 'block';
+                walletConnectedDiv.style.display = 'none';
+            }
+        }
+        
+        function renderGoldStore() {
+            const container = document.getElementById('goldStorePackages');
+            if (!container) return;
+            
+            if (!gameState.wallet.connected) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">🔒</div>
+                        <div>Connect your wallet to purchase Gold with ETH</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = goldPackages.map(pkg => {
+                const totalGold = pkg.gold + pkg.bonus;
+                const canAfford = gameState.wallet.balance >= parseFloat(pkg.eth);
+                
+                return `
+                    <div style="padding: 15px; background: var(--bg-primary); border: 2px solid ${pkg.popular ? 'var(--accent-gold)' : 'var(--border-color)'}; border-radius: 8px; margin-bottom: 10px; position: relative;">
+                        ${pkg.popular ? '<div style="position: absolute; top: -10px; right: 10px; padding: 4px 12px; background: var(--accent-gold); color: var(--bg-primary); font-size: 0.75rem; font-weight: 700; border-radius: 20px;">POPULAR</div>' : ''}
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 700; font-size: 1.1rem;">${pkg.name}</div>
+                                <div style="font-size: 0.9rem; color: var(--accent-gold); margin-top: 5px;">
+                                    ${pkg.gold} Gold ${pkg.bonus > 0 ? `<span style="color: var(--accent-green);">+${pkg.bonus} Bonus</span>` : ''}
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 3px;">
+                                    ${pkg.eth} ETH
+                                </div>
+                            </div>
+                            <button class="btn ${canAfford ? 'btn-primary' : 'btn-secondary'}" 
+                                    onclick="purchaseGoldWithETH('${pkg.id}')" 
+                                    ${!canAfford ? 'disabled' : ''}
+                                    style="min-width: 100px;">
+                                ${canAfford ? 'Buy Now' : 'Insufficient ETH'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function purchaseGoldWithETH(packageId) {
+            const pkg = goldPackages.find(p => p.id === packageId);
+            if (!pkg) return;
+            
+            if (!gameState.wallet.connected) {
+                showNotification('Please connect your wallet first!', 'error');
+                return;
+            }
+            
+            const totalGold = pkg.gold + pkg.bonus;
+            
+            if (!confirm(`Purchase ${totalGold} Gold for ${pkg.eth} ETH?`)) {
+                return;
+            }
+            
+            try {
+                // In a real implementation, this would send a transaction to a smart contract
+                // For demo purposes, we'll simulate the purchase
+                
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner();
+                
+                // Create transaction
+                const tx = {
+                    to: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb', // Demo address (replace with real contract)
+                    value: ethers.utils.parseEther(pkg.eth),
+                    gasLimit: 21000
+                };
+                
+                showNotification('Transaction pending... Please confirm in MetaMask', 'success');
+                
+                // Send transaction
+                const transaction = await signer.sendTransaction(tx);
+                
+                showNotification('Processing transaction...', 'success');
+                
+                // Wait for confirmation
+                await transaction.wait();
+                
+                // Award gold
+                gameState.gold += totalGold;
+                
+                // Update balance
+                const balance = await provider.getBalance(gameState.wallet.address);
+                gameState.wallet.balance = parseFloat(ethers.utils.formatEther(balance));
+                
+                showNotification(`Successfully purchased ${totalGold} Gold!`, 'success');
+                addActivity(`Purchased ${totalGold} Gold with ${pkg.eth} ETH`);
+                
+                renderGoldStore();
+                renderWalletStatus();
+                renderShop();
+                updateUI();
+                
+            } catch (error) {
+                console.error('Purchase error:', error);
+                if (error.code === 4001) {
+                    showNotification('Transaction rejected by user', 'error');
+                } else {
+                    showNotification('Transaction failed. Please try again.', 'error');
+                }
+            }
+        }
+        
+        // Audio System
+        let audioContext = null;
+        let musicAudio = null;
+        let musicTracks = {
+            ambient: 'https://cdn.pixabay.com/audio/2022/03/10/audio_c8c6e0c440.mp3', // Placeholder - replace with your music
+            upbeat: 'https://cdn.pixabay.com/audio/2022/03/15/audio_b07f0d9823.mp3',
+            chill: 'https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3',
+            adventure: 'https://cdn.pixabay.com/audio/2022/03/24/audio_67b94ca4d3.mp3'
+        };
+        
+        function initAudioSystem() {
+            // Create audio context for sound effects
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.warn('Web Audio API not supported');
+            }
+            
+            // Create music audio element
+            musicAudio = new Audio();
+            musicAudio.loop = true;
+            musicAudio.volume = gameState.audio.musicVolume;
+            
+            // Set initial track
+            musicAudio.src = musicTracks[gameState.audio.currentTrack];
+            
+            // Handle autoplay policy - music will start on first user interaction
+            document.addEventListener('click', startMusicOnInteraction, { once: true });
+            
+            // Update UI
+            updateAudioUI();
+        }
+        
+        function startMusicOnInteraction() {
+            if (gameState.audio.musicEnabled && musicAudio) {
+                musicAudio.play().catch(e => console.log('Music autoplay prevented'));
+            }
+        }
+        
+        function updateAudioUI() {
+            // Update music toggle
+            const musicStatus = document.getElementById('musicStatus');
+            const musicToggle = document.getElementById('musicToggle');
+            if (musicStatus) {
+                musicStatus.textContent = gameState.audio.musicEnabled ? 'ON' : 'OFF';
+            }
+            if (musicToggle) {
+                musicToggle.style.background = gameState.audio.musicEnabled ? 'var(--accent-green)' : 'var(--bg-primary)';
+            }
+            
+            // Update SFX toggle
+            const sfxStatus = document.getElementById('sfxStatus');
+            const sfxToggle = document.getElementById('sfxToggle');
+            if (sfxStatus) {
+                sfxStatus.textContent = gameState.audio.sfxEnabled ? 'ON' : 'OFF';
+            }
+            if (sfxToggle) {
+                sfxToggle.style.background = gameState.audio.sfxEnabled ? 'var(--accent-blue)' : 'var(--bg-primary)';
+            }
+            
+            // Update volume displays
+            const musicVolumeDisplay = document.getElementById('musicVolumeDisplay');
+            const musicVolumeSlider = document.getElementById('musicVolumeSlider');
+            if (musicVolumeDisplay) musicVolumeDisplay.textContent = Math.round(gameState.audio.musicVolume * 100);
+            if (musicVolumeSlider) musicVolumeSlider.value = gameState.audio.musicVolume * 100;
+            
+            const sfxVolumeDisplay = document.getElementById('sfxVolumeDisplay');
+            const sfxVolumeSlider = document.getElementById('sfxVolumeSlider');
+            if (sfxVolumeDisplay) sfxVolumeDisplay.textContent = Math.round(gameState.audio.sfxVolume * 100);
+            if (sfxVolumeSlider) sfxVolumeSlider.value = gameState.audio.sfxVolume * 100;
+            
+            // Update track select
+            const trackSelect = document.getElementById('trackSelect');
+            if (trackSelect) trackSelect.value = gameState.audio.currentTrack;
+        }
+        
+        function toggleMusic() {
+            gameState.audio.musicEnabled = !gameState.audio.musicEnabled;
+            
+            if (gameState.audio.musicEnabled) {
+                musicAudio.play().catch(e => console.log('Music play prevented'));
+            } else {
+                musicAudio.pause();
+            }
+            
+            updateAudioUI();
+            saveGame(true);
+        }
+        
+        function toggleSFX() {
+            gameState.audio.sfxEnabled = !gameState.audio.sfxEnabled;
+            updateAudioUI();
+            saveGame(true);
+            
+            // Test sound when enabling
+            if (gameState.audio.sfxEnabled) {
+                playSound('success');
+            }
+        }
+        
+        function setMusicVolume(value) {
+            gameState.audio.musicVolume = value / 100;
+            if (musicAudio) {
+                musicAudio.volume = gameState.audio.musicVolume;
+            }
+            updateAudioUI();
+        }
+        
+        function setSFXVolume(value) {
+            gameState.audio.sfxVolume = value / 100;
+            updateAudioUI();
+        }
+        
+        function changeTrack(trackId) {
+            gameState.audio.currentTrack = trackId;
+            
+            if (musicAudio) {
+                const wasPlaying = !musicAudio.paused;
+                musicAudio.src = musicTracks[trackId];
+                
+                if (wasPlaying && gameState.audio.musicEnabled) {
+                    musicAudio.play().catch(e => console.log('Track change play prevented'));
+                }
+            }
+            
+            saveGame(true);
+        }
+        
+        function testSound() {
+            playSound('test');
+        }
+        
+        // Sound effect generator using Web Audio API
+        function playSound(type) {
+            if (!gameState.audio.sfxEnabled || !audioContext) return;
+            
+            try {
+                const now = audioContext.currentTime;
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                gainNode.gain.value = gameState.audio.sfxVolume * 0.3; // Keep subtle
+                
+                switch(type) {
+                    case 'action_complete':
+                        // Success chime - rising tone
+                        oscillator.frequency.setValueAtTime(400, now);
+                        oscillator.frequency.exponentialRampToValueAtTime(800, now + 0.1);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                        oscillator.type = 'sine';
+                        break;
+                        
+                    case 'coin':
+                        // Coin pickup - short high tone
+                        oscillator.frequency.setValueAtTime(800, now);
+                        oscillator.frequency.exponentialRampToValueAtTime(1000, now + 0.05);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                        oscillator.type = 'sine';
+                        break;
+                        
+                    case 'craft':
+                        // Crafting - hammer sound
+                        oscillator.frequency.setValueAtTime(150, now);
+                        gainNode.gain.setValueAtTime(gameState.audio.sfxVolume * 0.4, now);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                        oscillator.type = 'square';
+                        break;
+                        
+                    case 'level_up':
+                        // Level up - fanfare
+                        oscillator.frequency.setValueAtTime(523, now); // C
+                        oscillator.frequency.setValueAtTime(659, now + 0.1); // E
+                        oscillator.frequency.setValueAtTime(784, now + 0.2); // G
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                        oscillator.type = 'sine';
+                        break;
+                        
+                    case 'purchase':
+                        // Purchase - confirmation beep
+                        oscillator.frequency.setValueAtTime(600, now);
+                        oscillator.frequency.setValueAtTime(700, now + 0.05);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                        oscillator.type = 'sine';
+                        break;
+                        
+                    case 'error':
+                        // Error - low buzz
+                        oscillator.frequency.setValueAtTime(200, now);
+                        oscillator.frequency.setValueAtTime(150, now + 0.1);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                        oscillator.type = 'sawtooth';
+                        break;
+                        
+                    case 'achievement':
+                        // Achievement - triumph
+                        oscillator.frequency.setValueAtTime(400, now);
+                        oscillator.frequency.setValueAtTime(500, now + 0.1);
+                        oscillator.frequency.setValueAtTime(600, now + 0.2);
+                        oscillator.frequency.setValueAtTime(800, now + 0.3);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                        oscillator.type = 'sine';
+                        break;
+                        
+                    case 'click':
+                        // UI click - short blip
+                        oscillator.frequency.setValueAtTime(1000, now);
+                        gainNode.gain.setValueAtTime(gameState.audio.sfxVolume * 0.2, now);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                        oscillator.type = 'sine';
+                        break;
+                        
+                    case 'success':
+                        // Success - pleasant chime
+                        oscillator.frequency.setValueAtTime(800, now);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                        oscillator.type = 'sine';
+                        break;
+                        
+                    case 'test':
+                        // Test sound - full range
+                        oscillator.frequency.setValueAtTime(440, now);
+                        oscillator.frequency.exponentialRampToValueAtTime(880, now + 0.2);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                        oscillator.type = 'sine';
+                        break;
+                        
+                    default:
+                        // Default beep
+                        oscillator.frequency.setValueAtTime(440, now);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                        oscillator.type = 'sine';
+                }
+                
+                oscillator.start(now);
+                oscillator.stop(now + 0.5);
+                
+            } catch (e) {
+                console.warn('Sound effect error:', e);
+            }
+        }
+        
         function initializeEconomy() {
             // Initialize NPC traders if not present
             if (Object.keys(gameState.economy.npcTraders).length === 0) {
@@ -3461,6 +4137,17 @@
             // Set initial tax payment time if not set
             if (!gameState.economy.lastTaxPayment) {
                 gameState.economy.lastTaxPayment = Date.now();
+            }
+            
+            // Initialize tax system fields
+            if (gameState.economy.silverAtLastTax === undefined) {
+                gameState.economy.silverAtLastTax = gameState.stats.silverEarned || 0;
+            }
+            if (!gameState.economy.taxType) {
+                gameState.economy.taxType = 'income';
+            }
+            if (gameState.economy.taxRate === undefined || gameState.economy.taxRate === 50) {
+                gameState.economy.taxRate = 0.10; // 10% default
             }
         }
         
@@ -3787,17 +4474,26 @@
         
         function checkTaxes() {
             const timeSinceLastTax = Date.now() - gameState.economy.lastTaxPayment;
-            const dayDuration = 86400000; // 24 hours in ms (we'll use 5 minutes for demo: 300000)
             const taxPeriod = 300000; // 5 minutes for gameplay
             
             const timeUntilTax = taxPeriod - (timeSinceLastTax % taxPeriod);
-            const hours = Math.floor(timeUntilTax / 3600000);
-            const minutes = Math.floor((timeUntilTax % 3600000) / 60000);
+            const minutes = Math.floor(timeUntilTax / 60000);
             const seconds = Math.floor((timeUntilTax % 60000) / 1000);
             
             const nextTaxEl = document.getElementById('nextTaxTime');
             if (nextTaxEl) {
                 nextTaxEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            // Calculate tax amount for display
+            const taxAmount = calculateTaxAmount();
+            const dailyTaxAmountEl = document.getElementById('dailyTaxAmount');
+            if (dailyTaxAmountEl) {
+                if (gameState.economy.taxType === 'income') {
+                    dailyTaxAmountEl.textContent = `${Math.floor(gameState.economy.taxRate * 100)}% Income`;
+                } else {
+                    dailyTaxAmountEl.textContent = `${Math.floor(gameState.economy.taxRate * 100)}% Wealth`;
+                }
             }
             
             // Auto-pay tax when due
@@ -3806,19 +4502,41 @@
             }
         }
         
+        function calculateTaxAmount() {
+            if (gameState.economy.taxType === 'income') {
+                // Tax on income earned since last tax payment
+                const earnedSinceTax = (gameState.stats.silverEarned || 0) - (gameState.economy.silverAtLastTax || 0);
+                return Math.floor(earnedSinceTax * gameState.economy.taxRate);
+            } else {
+                // Tax on current wealth
+                return Math.floor(gameState.silver * gameState.economy.taxRate);
+            }
+        }
+        
         function payTax() {
-            const taxAmount = gameState.economy.taxRate;
+            const taxAmount = calculateTaxAmount();
+            
+            if (taxAmount <= 0) {
+                gameState.economy.lastTaxPayment = Date.now();
+                gameState.economy.silverAtLastTax = gameState.stats.silverEarned || 0;
+                showNotification(`No tax owed this period`, 'success');
+                return;
+            }
             
             if (gameState.silver >= taxAmount) {
                 gameState.silver -= taxAmount;
                 gameState.economy.lastTaxPayment = Date.now();
-                showNotification(`Paid daily tax: ${taxAmount} Silver`, 'success');
-                addActivity(`Paid daily trade tax: ${taxAmount} Silver`);
+                gameState.economy.silverAtLastTax = gameState.stats.silverEarned || 0;
+                
+                const taxType = gameState.economy.taxType === 'income' ? 'income' : 'wealth';
+                showNotification(`Paid ${taxType} tax: ${taxAmount} Silver`, 'success');
+                addActivity(`Paid ${taxType} tax: ${taxAmount} Silver`);
             } else {
                 // Can't pay - apply penalty
                 const penalty = Math.floor(gameState.silver * 0.5);
                 gameState.silver -= penalty;
                 gameState.economy.lastTaxPayment = Date.now();
+                gameState.economy.silverAtLastTax = gameState.stats.silverEarned || 0;
                 showNotification(`⚠️ Insufficient funds for tax! Penalty: ${penalty} Silver`, 'error');
                 addActivity(`Tax penalty applied: ${penalty} Silver`);
             }
@@ -3989,6 +4707,14 @@
         }
 
         function startAction(actionId) {
+            // Check if any action is already active (single action at a time)
+            const activeActionKeys = Object.keys(gameState.activeActions);
+            if (activeActionKeys.length > 0) {
+                showNotification('⚠️ Only one action at a time! Complete current action first.', 'error');
+                playSound('error');
+                return;
+            }
+            
             // Find action in current biome
             const currentBiome = biomes[gameState.progress.currentBiome];
             const action = currentBiome.actions.find(a => a.id === actionId);
@@ -3997,6 +4723,7 @@
             
             if (gameState.silver < action.cost) {
                 showNotification('Not enough Silver!', 'error');
+                playSound('error');
                 return;
             }
             
@@ -4005,12 +4732,14 @@
                 const toolStatus = checkToolStatus(action.tool);
                 if (!toolStatus.canUse) {
                     showNotification(toolStatus.message, 'error');
+                    playSound('error');
                     return;
                 }
             }
 
             if (gameState.activeActions[actionId]) {
                 showNotification('Action already in progress!', 'error');
+                playSound('error');
                 return;
             }
 
@@ -4121,6 +4850,13 @@
             if (fillEl) fillEl.style.width = '0%';
 
             showNotification(`${action.name} complete!`, 'success');
+            playSound('action_complete');
+            
+            // Play coin sound if silver was earned
+            if (action.reward.silver) {
+                setTimeout(() => playSound('coin'), 100);
+            }
+            
             renderBiomeActions(); // Re-render to update tool status
             renderTools(); // Update tools display
             updateUI();
@@ -4216,18 +4952,28 @@
         }
         
         function startCrafting(recipeId) {
+            // Check if any action is already active (single action at a time)
+            const activeActionKeys = Object.keys(gameState.activeActions);
+            if (activeActionKeys.length > 0) {
+                showNotification('⚠️ Only one action at a time! Complete current action first.', 'error');
+                playSound('error');
+                return;
+            }
+            
             const recipe = craftingRecipes.find(r => r.id === recipeId);
             if (!recipe) return;
             
             const canCraft = checkCraftingRequirements(recipe);
             if (!canCraft.canCraft) {
                 showNotification(canCraft.message, 'error');
+                playSound('error');
                 return;
             }
             
             const actionId = `craft_${recipeId}`;
             if (gameState.activeActions[actionId]) {
                 showNotification('Already crafting this item!', 'error');
+                playSound('error');
                 return;
             }
             
@@ -4323,6 +5069,7 @@
             if (fillEl) fillEl.style.width = '0%';
             
             showNotification(`${recipe.name} crafted!`, 'success');
+            playSound('craft');
             renderCraftingRecipes();
             renderTools();
             renderBiomeActions(); // Update actions if new tools available
@@ -4687,6 +5434,7 @@
                                 worker.xpToNext = Math.floor(worker.xpToNext * 1.5); // 50% more XP per level
                                 
                                 showNotification(`${worker.name} reached level ${worker.level}!`, 'success');
+                                playSound('level_up');
                                 addActivity(`${worker.name} leveled up to ${worker.level}!`);
                             }
                         }
@@ -5235,6 +5983,17 @@
                         gameState.character = {
                             ...gameState.character,
                             ...loaded.character
+                        };
+                    }
+                    
+                    // Note: Wallet data is NOT persisted for security reasons
+                    // Users must reconnect their wallet each session
+                    
+                    // Audio data
+                    if (loaded.audio) {
+                        gameState.audio = {
+                            ...gameState.audio,
+                            ...loaded.audio
                         };
                     }
                     
