@@ -549,7 +549,7 @@
                 <h1 class="game-title">GCAβ WORLD</h1>
                 <div class="currency-display">
                     <div class="currency-item">
-                        <span class="currency-icon silver">🪙</span>
+                        <span class="currency-icon silver">🥈</span>
                         <span><strong id="silverAmount">1000</strong> Silver</span>
                     </div>
                     <div class="currency-item">
@@ -620,15 +620,15 @@
                         <div class="card-stats">
                             <div class="stat-row">
                                 <span class="stat-label">Silver Earned:</span>
-                                <span class="stat-value" style="color: var(--accent-green);" id="silverEarned">0 🪙</span>
+                                <span class="stat-value" style="color: var(--accent-green);" id="silverEarned">0 🥈</span>
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Silver Spent:</span>
-                                <span class="stat-value" style="color: var(--accent-red);" id="silverSpent">0 🪙</span>
+                                <span class="stat-value" style="color: var(--accent-red);" id="silverSpent">0 🥈</span>
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Net Profit:</span>
-                                <span class="stat-value" id="netProfit">0 🪙</span>
+                                <span class="stat-value" id="netProfit">0 🥈</span>
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Next Tax:</span>
@@ -688,7 +688,7 @@
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Total Wealth:</span>
-                                <span class="stat-value" id="totalWealth">0 🪙</span>
+                                <span class="stat-value" id="totalWealth">0 🥈</span>
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Achievements:</span>
@@ -727,15 +727,15 @@
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Silver Earned:</span>
-                                <span class="stat-value" style="color: var(--accent-green);" id="charSilverEarned">0 🪙</span>
+                                <span class="stat-value" style="color: var(--accent-green);" id="charSilverEarned">0 🥈</span>
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Silver Spent:</span>
-                                <span class="stat-value" style="color: var(--accent-red);" id="charSilverSpent">0 🪙</span>
+                                <span class="stat-value" style="color: var(--accent-red);" id="charSilverSpent">0 🥈</span>
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Net Profit:</span>
-                                <span class="stat-value" id="charNetProfit">0 🪙</span>
+                                <span class="stat-value" id="charNetProfit">0 🥈</span>
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Play Time:</span>
@@ -1931,7 +1931,7 @@
             {
                 id: 'earn_silver',
                 name: 'Profit Seeker',
-                icon: '🪙',
+                icon: '🥈',
                 description: 'Earn {amount} Silver',
                 type: 'silver_earned',
                 amounts: [500, 1000, 2000],
@@ -2105,7 +2105,7 @@
             silver_hoarder: {
                 id: 'silver_hoarder',
                 name: 'Silver Hoarder',
-                icon: '🪙',
+                icon: '🥈',
                 description: 'Accumulate 10,000 Silver at once',
                 category: 'economy',
                 tier: 'silver',
@@ -2115,7 +2115,7 @@
             wealthy: {
                 id: 'wealthy',
                 name: 'Wealthy Magnate',
-                icon: '🪙',
+                icon: '🥈',
                 description: 'Accumulate 50,000 Silver at once',
                 category: 'economy',
                 tier: 'gold',
@@ -2558,7 +2558,7 @@
                             <div>
                                 <div style="font-size: 0.85rem; color: var(--text-secondary);">Reward:</div>
                                 <div style="font-size: 1.1rem; font-weight: 700;">
-                                    ${quest.reward.silver} 🪙 ${quest.reward.gold > 0 ? `+ ${quest.reward.gold} 🥇` : ''}
+                                    ${quest.reward.silver} 🥈 ${quest.reward.gold > 0 ? `+ ${quest.reward.gold} 🥇` : ''}
                                 </div>
                             </div>
                             <button class="btn ${quest.completed ? 'btn-primary' : 'btn-secondary'}" 
@@ -2637,7 +2637,7 @@
                         <div style="padding-top: 15px; border-top: 1px solid var(--border-color);">
                             <div style="font-size: 0.85rem; color: var(--text-secondary);">Reward:</div>
                             <div style="font-size: 1.1rem; font-weight: 700;">
-                                ${achievement.reward.silver} 🪙 ${achievement.reward.gold ? `+ ${achievement.reward.gold} 🥇` : ''}
+                                ${achievement.reward.silver} 🥈 ${achievement.reward.gold ? `+ ${achievement.reward.gold} 🥇` : ''}
                             </div>
                         </div>
                     </div>
@@ -3206,7 +3206,7 @@
             }
             const totalWealth = gameState.silver + inventoryValue + (gameState.gold * 1000);
             const totalWealthEl = document.getElementById('totalWealth');
-            if (totalWealthEl) totalWealthEl.textContent = totalWealth.toLocaleString() + ' 🪙';
+            if (totalWealthEl) totalWealthEl.textContent = totalWealth.toLocaleString() + ' 🥈';
             
             // Update achievements count
             const unlockedAchievements = Object.values(gameState.achievements).filter(a => a.unlocked).length;
@@ -3236,15 +3236,15 @@
             if (charTradesMadeEl) charTradesMadeEl.textContent = gameState.stats.tradesMade || 0;
             
             const charSilverEarnedEl = document.getElementById('charSilverEarned');
-            if (charSilverEarnedEl) charSilverEarnedEl.textContent = (gameState.stats.silverEarned || 0).toLocaleString() + ' 🪙';
+            if (charSilverEarnedEl) charSilverEarnedEl.textContent = (gameState.stats.silverEarned || 0).toLocaleString() + ' 🥈';
             
             const charSilverSpentEl = document.getElementById('charSilverSpent');
-            if (charSilverSpentEl) charSilverSpentEl.textContent = (gameState.stats.silverSpent || 0).toLocaleString() + ' 🪙';
+            if (charSilverSpentEl) charSilverSpentEl.textContent = (gameState.stats.silverSpent || 0).toLocaleString() + ' 🥈';
             
             const netProfit = (gameState.stats.silverEarned || 0) - (gameState.stats.silverSpent || 0);
             const charNetProfitEl = document.getElementById('charNetProfit');
             if (charNetProfitEl) {
-                charNetProfitEl.textContent = netProfit.toLocaleString() + ' 🪙';
+                charNetProfitEl.textContent = netProfit.toLocaleString() + ' 🥈';
                 charNetProfitEl.style.color = netProfit >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
             }
             
@@ -3281,7 +3281,7 @@
             
             // Wealth badges
             if (gameState.silver >= 50000) badges.push('💰');
-            else if (gameState.silver >= 10000) badges.push('🪙');
+            else if (gameState.silver >= 10000) badges.push('🥈');
             
             // Worker badges
             if (gameState.workers.length >= 6) badges.push('👔');
@@ -3338,11 +3338,11 @@
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Unit Value:</span>
-                                <span class="stat-value">${baseValue} 🪙</span>
+                                <span class="stat-value">${baseValue} 🥈</span>
                             </div>
                             <div class="stat-row">
                                 <span class="stat-label">Total Value:</span>
-                                <span class="stat-value" style="color: var(--accent-gold);">${totalValue} 🪙</span>
+                                <span class="stat-value" style="color: var(--accent-gold);">${totalValue} 🥈</span>
                             </div>
                         </div>
                         <button class="btn btn-secondary" onclick="quickSellItem('${item}', ${quantity})">
@@ -3571,7 +3571,7 @@
                                 <div class="stat-row">
                                     <span>${item.replace(/_/g, ' ')}</span>
                                     <span style="color: ${owned > 0 ? 'var(--accent-green)' : 'var(--text-secondary)'}">
-                                        ${price} 🪙 (${owned})
+                                        ${price} 🥈 (${owned})
                                     </span>
                                 </div>
                             `;
@@ -3587,7 +3587,7 @@
                             return `
                                 <div class="stat-row">
                                     <span>${item.replace(/_/g, ' ')}</span>
-                                    <span style="color: var(--accent-gold)">${price} 🪙</span>
+                                    <span style="color: var(--accent-gold)">${price} 🥈</span>
                                 </div>
                             `;
                         }).join('')}
@@ -3620,7 +3620,7 @@
                                             <div class="market-item-name">${item.replace(/_/g, ' ')}</div>
                                             <div class="market-item-details">You have: ${owned}</div>
                                         </div>
-                                        <div class="market-price">${price} 🪙</div>
+                                        <div class="market-price">${price} 🥈</div>
                                         <div style="display: flex; gap: 5px;">
                                             <button class="btn btn-secondary" onclick="tradeWithNPC('${traderKey}', '${item}', 'sell', 1)" ${owned < 1 ? 'disabled' : ''}>Sell 1</button>
                                             <button class="btn btn-secondary" onclick="tradeWithNPC('${traderKey}', '${item}', 'sell', 10)" ${owned < 10 ? 'disabled' : ''}>Sell 10</button>
@@ -3639,7 +3639,7 @@
                                         <div class="market-info">
                                             <div class="market-item-name">${item.replace(/_/g, ' ')}</div>
                                         </div>
-                                        <div class="market-price">${price} 🪙</div>
+                                        <div class="market-price">${price} 🥈</div>
                                         <div style="display: flex; gap: 5px;">
                                             <button class="btn btn-primary" onclick="tradeWithNPC('${traderKey}', '${item}', 'buy', 1)" ${gameState.silver < price ? 'disabled' : ''}>Buy 1</button>
                                             <button class="btn btn-primary" onclick="tradeWithNPC('${traderKey}', '${item}', 'buy', 10)" ${gameState.silver < price * 10 ? 'disabled' : ''}>Buy 10</button>
@@ -3722,7 +3722,7 @@
                             ${item.replace(/_/g, ' ')}
                         </div>
                         <div style="font-size: 1.4rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 5px;">
-                            ${currentPrice} 🪙
+                            ${currentPrice} 🥈
                         </div>
                         <div style="font-size: 0.85rem; color: ${change >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'}">
                             ${change >= 0 ? '📈' : '📉'} ${change >= 0 ? '+' : ''}${changePercent}%
@@ -3980,7 +3980,7 @@
             const parts = [];
             for (const [key, value] of Object.entries(reward)) {
                 if (key === 'silver') {
-                    parts.push(`${value} 🪙`);
+                    parts.push(`${value} 🥈`);
                 } else {
                     parts.push(`${value} ${key}`);
                 }
@@ -4517,7 +4517,7 @@
                         <div class="market-item-name">${listing.quantity}x ${listing.item}</div>
                         <div class="market-item-details">Seller: ${listing.seller}</div>
                     </div>
-                    <div class="market-price">${listing.price} 🪙</div>
+                    <div class="market-price">${listing.price} 🥈</div>
                     <div style="display: flex; gap: 10px;">
                         ${listing.seller === 'You' ? 
                             `<button class="btn btn-secondary" onclick="cancelListing(${listing.id})">Cancel</button>` :
@@ -4977,7 +4977,7 @@
                                                 ).join(', ')}
                                             </div>
                                         </div>
-                                        <div class="market-price">${equipment.cost} 🪙</div>
+                                        <div class="market-price">${equipment.cost} 🥈</div>
                                         <button class="btn ${isEquipped ? 'btn-secondary' : 'btn-primary'}" 
                                                 onclick="equipWorker(${workerId}, '${key}')" 
                                                 ${isEquipped ? 'disabled' : ''}>
@@ -5067,10 +5067,10 @@
             const profitEl = document.getElementById('netProfit');
             const nextTaxEl = document.getElementById('nextTaxDisplay');
             
-            if (earnedEl) earnedEl.textContent = `${silverEarned} 🪙`;
-            if (spentEl) spentEl.textContent = `${silverSpent} 🪙`;
+            if (earnedEl) earnedEl.textContent = `${silverEarned} 🥈`;
+            if (spentEl) spentEl.textContent = `${silverSpent} 🥈`;
             if (profitEl) {
-                profitEl.textContent = `${netProfit} 🪙`;
+                profitEl.textContent = `${netProfit} 🥈`;
                 profitEl.style.color = netProfit >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
             }
             
